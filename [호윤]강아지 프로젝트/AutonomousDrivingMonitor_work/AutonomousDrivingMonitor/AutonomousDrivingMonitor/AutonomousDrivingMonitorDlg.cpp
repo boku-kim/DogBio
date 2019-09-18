@@ -116,13 +116,13 @@ BOOL CAutonomousDrivingMonitorDlg::OnInitDialog()
 
 	if (pszTest2 == NULL)
 	{
-		return;
+		return FALSE;
 	}
 	nLen = strlen(pszTest2);
 	
 	if (nLen > (TEST_TEXT_LEN - 1))
 	{
-		return;
+		return FALSE;
 	}
 
 	// or
