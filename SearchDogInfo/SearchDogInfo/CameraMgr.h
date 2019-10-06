@@ -1,15 +1,19 @@
 ﻿#pragma once
 
 
-// CameraMgr 대화 상자
+// OpenCam 대화 상자
 
-class OpenCam : public CDialogEx
+class CameraMgr : public CDialogEx
 {
-	DECLARE_DYNAMIC(OpenCam)
+	DECLARE_DYNAMIC(CameraMgr)
 
 public:
-	OpenCam(CWnd* pParent = nullptr);   // 표준 생성자입니다.
-	virtual ~OpenCam();
+	CameraMgr(CWnd* pParent = nullptr);   // 표준 생성자입니다.
+	virtual ~CameraMgr();
+
+	VideoCapture* capture;
+	Mat mat_frame;
+	CImage cimage_mfc;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -22,17 +26,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedTakephoto();
-	VideoCapture* capture;
-	CImage cimage_mfc;
-	Mat mat_frame; //카메라에서 가져오는 프레임
-	Mat mat_temp;
+	//CButton m_camera;
 	CStatic m_camera;
-	CStatic* m_picDog; //dog register에서 가져온것.
-	BITMAPINFO* bitInfo;
 	afx_msg void OnStnClickedCamera();
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedOk();
-	afx_msg void OnBnClickedCancel();
 };

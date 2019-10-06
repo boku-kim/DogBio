@@ -9,24 +9,6 @@
 #include "afxdialogex.h"
 #include "OpenCam.h"
 #include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/calib3d.hpp"
-#include "opencv2/cvconfig.h"
-#include "opencv2/dnn.hpp"
-#include "opencv2/features2d.hpp"
-#include "opencv2/flann.hpp"
-#include "opencv2/gapi.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/ml.hpp"
-#include "opencv2/objdetect.hpp"
-#include "opencv2/opencv_modules.hpp"
-#include "opencv2/photo.hpp"
-#include "opencv2/stitching.hpp"
-#include "opencv2/video.hpp"
-#include "opencv2/videoio.hpp"
-#include "opencv2/world.hpp"
 
 using namespace std;
 using namespace cv;
@@ -34,7 +16,6 @@ using namespace cv;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -68,10 +49,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
-
 // CSearchDogInfoDlg 대화 상자
-
-
 
 CSearchDogInfoDlg::CSearchDogInfoDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SEARCHDOGINFO_DIALOG, pParent)
@@ -82,6 +60,7 @@ CSearchDogInfoDlg::CSearchDogInfoDlg(CWnd* pParent /*=nullptr*/)
 void CSearchDogInfoDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_Picture, m_PIC);
 }
 
 BEGIN_MESSAGE_MAP(CSearchDogInfoDlg, CDialogEx)
@@ -90,6 +69,7 @@ BEGIN_MESSAGE_MAP(CSearchDogInfoDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_OpenCamera, &CSearchDogInfoDlg::OnBnClickedOpencamera)
 	ON_BN_CLICKED(IDC_LodaImage, &CSearchDogInfoDlg::OnBnClickedLodaimage)
+	ON_BN_CLICKED(IDC_SearchDog, &CSearchDogInfoDlg::OnBnClickedSearchdog)
 END_MESSAGE_MAP()
 
 
@@ -191,55 +171,37 @@ void CSearchDogInfoDlg::OnBnClickedOpencamera()
 void CSearchDogInfoDlg::OnBnClickedLodaimage()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	char szFilter[] = "Image (*.BMP, *.GIF, *.JPG, *.PNG) | *.BMP;*.GIF;*.JPG;*.PNG;*.bmp;*.gif;*.jpg;*.png | All Files(*.*)|*.*||";
+	char szFilter[] = "All Files(*.*)|*.*|";
 	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, AfxGetMainWnd());
 	if (dlg.DoModal() == IDOK)
 	{
-		CString cstrImgPath = dlg.GetPathName();
-		//AfxMessageBox(cstrImgPath);
+		//picture control 크기 획득
+		CRect rect;
+		m_PIC.GetClientRect(rect);
+		int iwidth, iheight;
+		iwidth = rect.Width();
+		iheight = rect.Height();
 
-		Mat src = imread(string(cstrImgPath));
-		DisplayImage(IDC_Picture, src);
+		// 이미지 경로 획득
+		CString img_path = dlg.GetPathName();
+		CDC* pDc;
+		pDc = m_PIC.GetWindowDC();
+		CDC memdc;
+
+		int width, height;
+		m_bmpBitmap.Destroy();
+		m_bmpBitmap.Load(img_path);
+		width = m_bmpBitmap.GetWidth();
+		height = m_bmpBitmap.GetHeight();
+		memdc.CreateCompatibleDC(pDc);
+		m_bmpBitmap.TransparentBlt(pDc->m_hDC, 0, 0, iwidth, iheight, SRCCOPY);
+		m_PIC.ReleaseDC(pDc);
+		pDc->DeleteDC();
+		pDc = NULL;
 	}
 }
 
-void CSearchDogInfoDlg::DisplayImage(int IDC_PICTURE_TARGET, Mat targetMat)
+void CSearchDogInfoDlg::OnBnClickedSearchdog()
 {
-	IplImage* targetIplImage = new IplImage(targetMat);
-	if (targetIplImage != nullptr) {
-		CWnd* pWnd_ImageTraget = GetDlgItem(IDC_PICTURE_TARGET);
-		CClientDC dcImageTraget(pWnd_ImageTraget);
-		RECT rcImageTraget;
-		pWnd_ImageTraget->GetClientRect(&rcImageTraget);
-
-		BITMAPINFO bitmapInfo;
-		memset(&bitmapInfo, 0, sizeof(bitmapInfo));
-		bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-		bitmapInfo.bmiHeader.biPlanes = 1;
-		bitmapInfo.bmiHeader.biCompression = BI_RGB;
-		bitmapInfo.bmiHeader.biWidth = targetIplImage->width;
-		bitmapInfo.bmiHeader.biHeight = -targetIplImage->height;
-
-		IplImage* tempImage = nullptr;
-
-		if (targetIplImage->nChannels == 1)
-		{
-			tempImage = cvCreateImage(cvSize(targetIplImage->width, targetIplImage->height), IPL_DEPTH_8U, 3);
-			cvCvtColor(targetIplImage, tempImage, CV_GRAY2BGR);
-		}
-		else if (targetIplImage->nChannels == 3)
-		{
-			tempImage = cvCloneImage(targetIplImage);
-		}
-
-		bitmapInfo.bmiHeader.biBitCount = tempImage->depth * tempImage->nChannels;
-
-		dcImageTraget.SetStretchBltMode(COLORONCOLOR);
-		::StretchDIBits(dcImageTraget.GetSafeHdc(), rcImageTraget.left, rcImageTraget.top, rcImageTraget.right, rcImageTraget.bottom,
-			0, 0, tempImage->width, tempImage->height, tempImage->imageData, &bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
-
-		cvReleaseImage(&tempImage);
-	}
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
-
-

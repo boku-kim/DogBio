@@ -102,6 +102,7 @@ BEGIN
     CONTROL         "",IDC_Picture,"Static",SS_BLACKFRAME,7,7,190,142
     PUSHBUTTON      "Load Img",IDC_LodaImage,53,169,50,14
     PUSHBUTTON      "Open Camera",IDC_OpenCamera,115,169,50,14
+    PUSHBUTTON      "Search",IDC_SearchDog,232,7,50,14
 END
 
 IDD_Camera DIALOGEX 0, 0, 227, 177

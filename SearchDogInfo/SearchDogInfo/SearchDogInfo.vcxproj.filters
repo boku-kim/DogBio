@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\camera_manager">
+      <UniqueIdentifier>{f4df3b21-156e-4ec0-a92b-c5ffacfd3793}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\camera_manager">
+      <UniqueIdentifier>{a84fb00b-facc-4d1c-b338-492625e8a36e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\dog_info_manager">
+      <UniqueIdentifier>{0e8050f4-ffdb-4654-90b2-c9c98662029f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\dog_info_manager">
+      <UniqueIdentifier>{005e28bb-632f-46db-bf36-a0a5011f030a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\storage_manager">
+      <UniqueIdentifier>{a4b08ea1-53bb-4ba8-918f-57316fa2f40d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\storage_manager">
+      <UniqueIdentifier>{b84242c4-2a65-4d64-818f-9b575ebe8856}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SearchDogInfo.h">
@@ -34,7 +52,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="OpenCam.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\camera_manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,7 +66,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="OpenCam.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\camera_manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
