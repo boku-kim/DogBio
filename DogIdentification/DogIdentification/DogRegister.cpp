@@ -1,14 +1,11 @@
 ﻿// DogRegister.cpp: 구현 파일
 //
+
 #include "stdafx.h"
 #include "DogIdentification.h"
 #include "DogRegister.h"
 #include "afxdialogex.h"
 
-#include <iostream>
-
-using namespace cv;
-using namespace std;
 
 // DogRegister 대화 상자
 
@@ -16,7 +13,7 @@ IMPLEMENT_DYNAMIC(DogRegister, CDialogEx)
 
 DogRegister::DogRegister(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_DOGREGISTER, pParent)
-	, m_radio(0)
+	, m_radiogender(0)
 {
 
 }
@@ -28,43 +25,30 @@ DogRegister::~DogRegister()
 void DogRegister::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT_DOGNAME, m_editDogname);
 	DDX_Control(pDX, IDC_PICDOGIMG, m_picDog);
-	DDX_Control(pDX, IDC_EDITDOGAGE, m_editDogAge);
-	DDX_Control(pDX, IDC_EDITDOGSPECIES, m_editSpecies);
-	DDX_Control(pDX, IDC_EDITDOGADDRESS, m_editAddress);
-	DDX_Radio(pDX, IDC_RADIO1, (int&)m_radio);
+	DDX_Control(pDX, IDC_EDIT_DOGNAME, m_editDogname);
+	DDX_Control(pDX, IDC_EDIT_DOGAGE, m_editAge);
+	DDX_Control(pDX, IDC_EDIT_DOGSPECIES, m_editSpecies);
+	DDX_Control(pDX, IDC_EDIT_DOGADDR, m_editAddr);
+	DDX_Radio(pDX, IDC_RADIO_MALE, (int&)m_radiogender);
 }
 
 
 BEGIN_MESSAGE_MAP(DogRegister, CDialogEx)
+	ON_BN_CLICKED(IDC_BTN_LOADIMG, &DogRegister::OnBnClickedBtnLoadimg)
+	ON_BN_CLICKED(IDC_BTN_OPENCAMERA, &DogRegister::OnBnClickedBtnOpencamera)
+	ON_BN_CLICKED(IDC_BTN_ANALYSIS, &DogRegister::OnBnClickedBtnAnalysis)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_MALE, IDC_RADIO_FEMALE, RadioCtrl)
 	ON_BN_CLICKED(IDOK, &DogRegister::OnBnClickedOk)
-	ON_BN_CLICKED(IDC_BTNLOADIMG, &DogRegister::OnBnClickedBtnloadimg)
-	ON_BN_CLICKED(IDC_BTNOPENCAMERA, &DogRegister::OnBnClickedBtnopencamera)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO1, IDC_RADIO2, RadioCtrl)
-	ON_BN_CLICKED(IDC_BTNANALYSIS, &DogRegister::OnBnClickedBtnanalysis)
 END_MESSAGE_MAP()
 
 
 // DogRegister 메시지 처리기
 
 
-void DogRegister::OnBnClickedOk()
+void DogRegister::OnBnClickedBtnLoadimg()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_editDogname.GetWindowTextW(m_dogName);
-	m_editDogAge.GetWindowTextW(m_dogAge);
-	m_editSpecies.GetWindowTextW(m_dogSpecies);
-	m_editAddress.GetWindowTextW(m_dogAddr);
-	if (Checkarg()) {
-		CDialogEx::OnOK();
-	}
-}
-
-void DogRegister::OnBnClickedBtnloadimg()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
 	CString szFilter = _T(" All Files(*.*)|*.*|");
 	CFileDialog filedlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter);
 	if (IDOK == filedlg.DoModal()) {
@@ -93,24 +77,44 @@ void DogRegister::OnBnClickedBtnloadimg()
 		pDc = NULL;
 
 	}
-
 }
 
-void DogRegister::OnBnClickedBtnopencamera()
+
+void DogRegister::OnBnClickedBtnOpencamera()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//CameraMgr* pCameraInst = CameraMgr::GetInstance();
-	//pCameraInst->m_picDog = &(this->m_picDog);
-	//pCameraInst->DoModal();
+	CameraMgr* pCameraInst = CameraMgr::GetInstance();
+	pCameraInst->m_picDog = &(this->m_picDog);
+	pCameraInst->DoModal();
+}
+
+
+void DogRegister::OnBnClickedBtnAnalysis()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void DogRegister::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_editDogname.GetWindowTextW(m_dogName);
+	m_editAge.GetWindowTextW(m_dogAge);
+	m_editSpecies.GetWindowTextW(m_dogSpecies);
+	m_editAddr.GetWindowTextW(m_dogAddr);
+	if (Checkarg()) {
+		CDialogEx::OnOK();
+	}
 }
 void DogRegister::RadioCtrl(UINT ID) {
 	UpdateData(TRUE);
-	switch (m_radio)
+	switch (m_radiogender)
 	{
 	case 0:
-	
+		m_gender.SetString((LPCWSTR)"male");
 		break;
 	case 1:
+		m_gender.SetString((LPCWSTR)"female");
 		break;
 	default:
 		break;
@@ -122,10 +126,4 @@ int DogRegister::Checkarg() {
 		return 0;
 	}
 	return 1;
-}
-
-
-void DogRegister::OnBnClickedBtnanalysis()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

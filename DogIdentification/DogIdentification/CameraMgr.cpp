@@ -6,14 +6,14 @@
 #include "CameraMgr.h"
 #include "afxdialogex.h"
 
-using namespace cv;
+
 // CameraMgr 대화 상자
 
 IMPLEMENT_DYNAMIC(CameraMgr, CDialogEx)
-
 CameraMgr* CameraMgr::m_Inst = NULL;
+
 CameraMgr::CameraMgr(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_DIALOGCAMERA, pParent)
+	: CDialogEx(IDD_DIALOG_CAMERA, pParent)
 {
 
 }
@@ -25,18 +25,15 @@ CameraMgr::~CameraMgr()
 void CameraMgr::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATICCAMERAPIC, m_camerapic);
+	DDX_Control(pDX, IDC_STATIC_CAMERAPIC, m_camerapic);
 }
 
 
 BEGIN_MESSAGE_MAP(CameraMgr, CDialogEx)
-	ON_WM_DESTROY()
 	ON_WM_TIMER()
-	//	ON_WM_INITMENU()
-	ON_BN_CLICKED(IDC_BTNTAKEPIC, &CameraMgr::OnBnClickedBtntakepic)
-	ON_BN_CLICKED(IDCANCEL, &CameraMgr::OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_BTN_TAKE, &CameraMgr::OnBnClickedBtnTake)
 	ON_BN_CLICKED(IDOK, &CameraMgr::OnBnClickedOk)
-	ON_BN_CLICKED(IDC_BTNTAKEPIC, &CameraMgr::OnBnClickedBtntakepic)
+	ON_BN_CLICKED(IDCANCEL, &CameraMgr::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 CameraMgr* CameraMgr::GetInstance()
@@ -55,21 +52,65 @@ void CameraMgr::ReleaseInstance()
 		delete m_Inst;
 	}
 }
-
 // CameraMgr 메시지 처리기
 
-
-void CameraMgr::OnDestroy()
+BOOL CameraMgr::OnInitDialog()
 {
-	CDialogEx::OnDestroy();
+	CDialogEx::OnInitDialog();
 
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	m_camerapic.GetClientRect(&camera_r);
+
+	capture = new VideoCapture(0);
+	if (!capture->isOpened())
+	{
+		MessageBox(_T("캠을 열수 없습니다. \n"));
+	}
+
+	//웹캠 크기 지정    
+	capture->set(CAP_PROP_FRAME_WIDTH, camera_r.right);
+	capture->set(CAP_PROP_FRAME_HEIGHT, camera_r.bottom);
+
+	SetTimer(1000, 30, NULL);
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+}
+void CameraMgr::OnBnClickedBtnTake()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	KillTimer(1000);
 }
 
 
+void CameraMgr::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CRect rect;
+	m_picDog->GetClientRect(rect);
+
+	cimage_mfc.Create(rect.Width(), rect.Height(), 24);
+	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, camera_r.right, camera_r.bottom, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+	HDC dc = ::GetDC(m_picDog->m_hWnd);
+	cimage_mfc.BitBlt(dc, 0, 0); //화면에 띄움
+	//cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
+	//cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
+	::ReleaseDC(m_camerapic.m_hWnd, dc);
+
+	cimage_mfc.ReleaseDC();
+	cimage_mfc.Destroy();
+
+	CDialogEx::OnOK();
+}
+
+
+void CameraMgr::OnBnClickedCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogEx::OnCancel();
+}
 void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	 //TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CDialogEx::OnTimer(nIDEvent);
 	//mat_frame가 입력 이미지입니다. 
@@ -112,10 +153,7 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 		mat_temp = mat_frame;
 	}
 
-
-	RECT r;
-	m_camerapic.GetClientRect(&r);
-	cv::Size winSize(r.right, r.bottom);
+	cv::Size winSize(camera_r.right, camera_r.bottom);
 
 	cimage_mfc.Create(winSize.width, winSize.height, 24);
 
@@ -187,62 +225,4 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 	cimage_mfc.Destroy();
 
 	CDialogEx::OnTimer(nIDEvent);
-}
-
-BOOL CameraMgr::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	capture = new VideoCapture(0);
-	if (!capture->isOpened())
-	{
-		MessageBox(_T("캠을 열수 없습니다. \n"));
-	}
-
-	//웹캠 크기를  320x240으로 지정    
-	capture->set(CAP_PROP_FRAME_WIDTH, 320);
-	capture->set(CAP_PROP_FRAME_HEIGHT, 240);
-
-	SetTimer(1000, 30, NULL);
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
-}
-
-void CameraMgr::OnBnClickedCancel()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnCancel();
-}
-
-
-void CameraMgr::OnBnClickedOk()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CRect rect;
-	m_picDog->GetClientRect(rect);
-	int iwidth, iheight;
-	iwidth = rect.Width();
-	iheight = rect.Height();
-
-	cimage_mfc.Create(iwidth, iwidth, 24);
-	StretchDIBits(cimage_mfc.GetDC(), 0, 0, iwidth, iheight, 0, 0, iwidth, iheight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
-
-	HDC dc = ::GetDC(m_picDog->m_hWnd);
-	//cimage_mfc.BitBlt(dc, 0, 0); //화면에 띄움
-	cimage_mfc.TransparentBlt(dc, 0, 0, iwidth, iheight, SRCCOPY);
-	::ReleaseDC(m_camerapic.m_hWnd, dc);
-
-	cimage_mfc.ReleaseDC();
-	cimage_mfc.Destroy();
-
-	CDialogEx::OnOK();
-}
-
-
-void CameraMgr::OnBnClickedBtntakepic()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//카메라 화면 찍은걸로 멈춤
-	KillTimer(1000);
 }

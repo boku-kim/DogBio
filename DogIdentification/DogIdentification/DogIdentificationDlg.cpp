@@ -2,22 +2,24 @@
 // DogIdentificationDlg.cpp: 구현 파일
 //
 
-#include "stdafx.h"
-//#include "framework.h"
+#include"stdafx.h"
 #include "DogIdentification.h"
 #include "DogIdentificationDlg.h"
 #include "afxdialogex.h"
 
-#include <my_system.h>
-#include <Util.h>
-#include <access_manager/AccessMgr.h>
-#include <DogRegister.h>
+#include "my_system.h"
 
+#include "Util.h"
+#include "DogRegister.h"
+#include "UserPassword.h"
+#include "AccessMgr.h"
+#include "Login.h"
+#include "EditPassword.h"
+#include "SearchDogInfo.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -71,7 +73,6 @@ BEGIN_MESSAGE_MAP(CDogIdentificationDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDOK, &CDogIdentificationDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
@@ -107,8 +108,33 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	 /*Util* instUtil = new Util();
+	delete instUtil;*/
+	if (TestFunction01() == eMOD_ERROR_SUCCESS)
+	{
+		Login login_dlg;
+		login_dlg.DoModal();
+		///< input password
+	}
+	else
+	{
+		///< register password -> open Register password dialog
+		///< UserPassword dlgPass;
+		///< dlgPass.sdfsd();
+		///< dlgPass.password
+		UserPassword dlg;
+		dlg.DoModal();
+		CString strPassword = dlg.GetPassword();
 
-	 
+		//const char pconstUserPassword[] = "1234567890";
+		AccessMgr* pAccessInst = AccessMgr::GetInstance();
+		if (pAccessInst)
+		{
+			pAccessInst->RegisterPassword((LPSTR)(LPCTSTR)strPassword, eSECURITY_TYPE_IMPORTANT);
+		}
+	}
+	
+
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -162,9 +188,36 @@ HCURSOR CDogIdentificationDlg::OnQueryDragIcon()
 }
 
 
-
-void CDogIdentificationDlg::OnBnClickedOk()
+int GetTextFromResource(int nResourceId)
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialogEx::OnOK();
+#ifdef _LANG_KO
+
+#endif // _LANG_KO
+
+#ifdef _LANG_EN
+#endif // _LANG_EN
+
+	return 0;
+}
+eModError CDogIdentificationDlg::TestFunction01() {
+	Util* pUtilInst = NULL;
+	eModError ret = eMOD_ERROR_FAIL;
+
+	pUtilInst = Util::GetInstance();
+	if (pUtilInst)
+	{
+		bool bExist = pUtilInst->ExistFile(MY_PASSWORD_FILE_PATH);
+		if (bExist == true)
+		{
+			m_bAlreadySetPasswd = true;
+			ret = eMOD_ERROR_SUCCESS;
+		}
+		else
+		{
+			m_bAlreadySetPasswd = false;
+			ret = eMOD_ERROR_FAIL;
+		}
+	}
+
+	return ret;
 }

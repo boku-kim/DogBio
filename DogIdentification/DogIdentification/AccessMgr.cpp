@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <access_manager/AccessMgr.h>
+#include "AccessMgr.h"
 
 AccessMgr* AccessMgr::m_Inst = NULL;
 

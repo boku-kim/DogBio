@@ -13,29 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\access_manager">
-      <UniqueIdentifier>{25a359b5-b073-44da-8eda-290eefaa5e1b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\camera_manager">
-      <UniqueIdentifier>{50d08542-57d7-40d4-bdef-d496e80b4dc7}</UniqueIdentifier>
+      <UniqueIdentifier>{ae62c6f6-34f4-4a92-b3a6-c9b21a4b835f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\access_manager">
+      <UniqueIdentifier>{378e9436-e9d1-4474-8e1d-5725169c36de}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\camera_manager">
-      <UniqueIdentifier>{dc91aa5b-c553-4696-b3ab-b2a6f10d5c59}</UniqueIdentifier>
+      <UniqueIdentifier>{e69fc362-aa5d-4936-b7f5-1f9dffab0520}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\access_manager">
-      <UniqueIdentifier>{d8012837-16a4-4d01-add4-48c0b93125cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\storage_manager">
-      <UniqueIdentifier>{9c2878a0-deb4-48b4-8418-c2d266f347f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\utility">
-      <UniqueIdentifier>{b976a6e2-7b4a-4040-b2dd-e612003d950f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\utility">
-      <UniqueIdentifier>{f6aff9cf-45ad-461f-b140-778af7d8c353}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\storage_manager">
-      <UniqueIdentifier>{b72b5257-43e8-454a-a3e1-cfee0e940417}</UniqueIdentifier>
+      <UniqueIdentifier>{4a93ab5b-bdc9-4ff3-88ae-b87f2084b2ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,25 +42,55 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="source\inc\access_manager\AccessMgr.h">
-      <Filter>헤더 파일\access_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\inc\storage_manager\StorageMgr.h">
-      <Filter>헤더 파일\storage_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\inc\utility\Util.h">
-      <Filter>헤더 파일\utility</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="DogRegister.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CameraMgr.h">
       <Filter>헤더 파일\camera_manager</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="UserPassword.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StorageMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\error_define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_system.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Login.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditPassword.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPassword.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangePassword.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchDogInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DogRegister.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditDogInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\access_manger\AccessMgr.h">
+      <Filter>헤더 파일\access_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDialog.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,25 +101,46 @@
     <ClCompile Include="DogIdentificationDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\src\access_manager\AccessMgr.cpp">
-      <Filter>소스 파일\access_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\utility\Util.cpp">
-      <Filter>소스 파일\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="DogRegister.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\storage_manager\StorageMgr.cpp">
-      <Filter>소스 파일\storage_manager</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CameraMgr.cpp">
       <Filter>소스 파일\camera_manager</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="UserPassword.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StorageMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Login.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EditPassword.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPassword.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangePassword.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchDogInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DogRegister.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EditDogInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AccessMgr.cpp">
+      <Filter>소스 파일\access_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MainDialog.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

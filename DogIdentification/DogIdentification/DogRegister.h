@@ -1,6 +1,5 @@
 ﻿#pragma once
-#include "afxwin.h"
-//#include "CameraMgr.h"
+#include "CameraMgr.h"
 
 // DogRegister 대화 상자
 
@@ -19,18 +18,14 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+
 	DECLARE_MESSAGE_MAP()
-
-
 private:
-	//CameraMgr cameramgr;
-	
-	CEdit m_editDogname;
-	CEdit m_editDogAge;
-	CEdit m_editSpecies;
-	CEdit m_editAddress;
 	CStatic m_picDog;
-	UINT m_radio;
+	CEdit m_editDogname;
+	CEdit m_editAge;
+	CEdit m_editSpecies;
+	CEdit m_editAddr;
 
 	CString m_dogName;
 	CString m_dogAge;
@@ -38,14 +33,13 @@ private:
 	CString m_dogAddr;
 	CString m_gender;
 	CImage m_bmpBitmap;
-
+	UINT m_radiogender;
 public:
 	int Checkarg();
-	afx_msg void OnBnClickedOk();
-	afx_msg void OnBnClickedBtnloadimg();
-	afx_msg void OnBnClickedBtnopencamera();
+	afx_msg void OnBnClickedBtnLoadimg();
+	afx_msg void OnBnClickedBtnOpencamera();
+	afx_msg void OnBnClickedBtnAnalysis();
 	afx_msg void RadioCtrl(UINT ID);
-	afx_msg void OnBnClickedBtnanalysis();
-
-	afx_msg void OnStnClickedStaticname();
+	
+	afx_msg void OnBnClickedOk();
 };

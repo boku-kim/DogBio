@@ -7,7 +7,8 @@
 
 #include "my_system.h"
 
-#include <utility/Util.h>
+#include "Util.h"
+
 
 
 // CDogIdentificationDlg 대화 상자
@@ -37,9 +38,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 
+private:
+	bool m_bAlreadySetPasswd;
+
 public:
 	eModError TestFunction01();
-	CEdit m_editPassword;
-	Util* m_instUtil;
-	afx_msg void OnBnClickedOk();
 };

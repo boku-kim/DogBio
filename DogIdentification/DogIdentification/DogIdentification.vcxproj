@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{2D14C3A8-2366-48EA-AF14-D23AD1D52401}</ProjectGuid>
+    <ProjectGuid>{3D21E816-4C68-4F49-A89C-83BA229D2053}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
     <RootNamespace>DogIdentification</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -76,19 +76,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source\src;$(ProjectDir)source\inc;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\camera_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(ProjectDir)source\src\access_manager;$(ProjectDir)source\src\camera_manager;$(ProjectDir)source\src\storage_manager;$(ProjectDir)source\src\utility;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(ProjectDir)source\inc\camera_manager;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(ProjectDir)source\inc\camera_manager;$(ProjectDir)source\inc\dog-info_manager;$(ProjectDir)source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source\inc;$(ProjectDir)source\src;$(ProjectDir)source\src\access_manager;$(ProjectDir)source\src\camera_manager;$(ProjectDir)source\src\storage_manager;$(ProjectDir)source\src\utility;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\camera_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(ProjectDir)source\inc\camera_manager;$(ProjectDir)source\inc\dog-info_manager;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(ProjectDir)source;$(ProjectDir)source\inc\access_manager;$(ProjectDir)source\inc\storage_manager;$(ProjectDir)source\inc\utility;$(ProjectDir)source\inc\camera_manager;$(ProjectDir)source\inc\dog-info_manager;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,14 +94,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_OS_WINDOWS;_LANG_EN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\dev-bin\opencv\build\include;C:\dev-bin\opencv\build\include\opencv2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;C:\dev-bin\opencv\build\x64\vc15\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world411.lib;opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -128,8 +123,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;C:\dev-bin\opencv\build\x64\vc15\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world411.lib;opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -150,16 +145,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_OS_WINDOWS;_LANG_EN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\dev-bin\opencv\build\include;C:\dev-bin\opencv\build\include\opencv2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;C:\dev-bin\opencv\build\x64\vc15\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world411.lib;opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -188,8 +180,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;C:\dev-bin\opencv\build\x64\vc15\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world411.lib;opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev-bin\opencv\build\x64\vc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -204,40 +196,53 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CameraMgr.h" />
+    <ClInclude Include="ChangePassword.h" />
+    <ClInclude Include="CheckPassword.h" />
     <ClInclude Include="DogIdentification.h" />
     <ClInclude Include="DogIdentificationDlg.h" />
     <ClInclude Include="DogRegister.h" />
+    <ClInclude Include="EditDogInfo.h" />
+    <ClInclude Include="EditPassword.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="pch.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="include\error_define.h" />
+    <ClInclude Include="include\my_define.h" />
+    <ClInclude Include="include\my_system.h" />
+    <ClInclude Include="Login.h" />
+    <ClInclude Include="MainDialog.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="source\inc\access_manager\AccessMgr.h" />
-    <ClInclude Include="source\inc\storage_manager\StorageMgr.h" />
-    <ClInclude Include="source\inc\utility\Util.h" />
+    <ClInclude Include="SearchDogInfo.h" />
+    <ClInclude Include="source\inc\access_manger\AccessMgr.h" />
     <ClInclude Include="stdafx.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="StorageMgr.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UserPassword.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AccessMgr.cpp" />
     <ClCompile Include="CameraMgr.cpp" />
+    <ClCompile Include="ChangePassword.cpp" />
+    <ClCompile Include="CheckPassword.cpp" />
     <ClCompile Include="DogIdentification.cpp" />
     <ClCompile Include="DogIdentificationDlg.cpp" />
     <ClCompile Include="DogRegister.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="source\src\access_manager\AccessMgr.cpp" />
-    <ClCompile Include="source\src\storage_manager\StorageMgr.cpp" />
-    <ClCompile Include="source\src\utility\Util.cpp" />
+    <ClCompile Include="EditDogInfo.cpp" />
+    <ClCompile Include="EditPassword.cpp" />
+    <ClCompile Include="Login.cpp" />
+    <ClCompile Include="MainDialog.cpp" />
+    <ClCompile Include="SearchDogInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="StorageMgr.cpp" />
+    <ClCompile Include="UserPassword.cpp" />
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DogIdentification.rc" />
