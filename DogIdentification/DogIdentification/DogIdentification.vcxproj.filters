@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\access_manager">
+      <UniqueIdentifier>{25a359b5-b073-44da-8eda-290eefaa5e1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\camera_manager">
+      <UniqueIdentifier>{50d08542-57d7-40d4-bdef-d496e80b4dc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\camera_manager">
+      <UniqueIdentifier>{dc91aa5b-c553-4696-b3ab-b2a6f10d5c59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\access_manager">
+      <UniqueIdentifier>{d8012837-16a4-4d01-add4-48c0b93125cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\storage_manager">
+      <UniqueIdentifier>{9c2878a0-deb4-48b4-8418-c2d266f347f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\utility">
+      <UniqueIdentifier>{b976a6e2-7b4a-4040-b2dd-e612003d950f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\utility">
+      <UniqueIdentifier>{f6aff9cf-45ad-461f-b140-778af7d8c353}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\storage_manager">
+      <UniqueIdentifier>{b72b5257-43e8-454a-a3e1-cfee0e940417}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DogIdentification.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DogIdentificationDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\access_manager\AccessMgr.h">
+      <Filter>헤더 파일\access_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\storage_manager\StorageMgr.h">
+      <Filter>헤더 파일\storage_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\utility\Util.h">
+      <Filter>헤더 파일\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DogRegister.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMgr.h">
+      <Filter>헤더 파일\camera_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DogIdentification.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DogIdentificationDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\access_manager\AccessMgr.cpp">
+      <Filter>소스 파일\access_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\utility\Util.cpp">
+      <Filter>소스 파일\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="DogRegister.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\storage_manager\StorageMgr.cpp">
+      <Filter>소스 파일\storage_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMgr.cpp">
+      <Filter>소스 파일\camera_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DogIdentification.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\DogIdentification.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\DogIdentification.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
