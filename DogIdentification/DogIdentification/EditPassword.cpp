@@ -24,6 +24,8 @@ EditPassword::~EditPassword()
 void EditPassword::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT2, m_newpw1);
+	DDX_Control(pDX, IDC_EDIT3, m_newpw2);
 }
 
 
@@ -40,18 +42,50 @@ END_MESSAGE_MAP()
 void EditPassword::OnBnClickedBtnCheck()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	checkpw = new CheckPassword();
-	checkpw->Create(IDD_DIALOG_CHECKPASSWORD, this);
-	checkpw->ShowWindow(SW_SHOW);
+	if (1)
+	{
+		MessageBox(_T("확인되었습니다."), _T("Password1 Valid"), MB_OK);
+	}
+	//checkpw = new CheckPassword();
+	//checkpw->Create(IDD_DIALOG_CHECKPASSWORD, this);
+	//checkpw->ShowWindow(SW_SHOW);
+
 }
 
 
 void EditPassword::OnBnClickedBtnChange()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	changepw = new ChangePassword();
-	changepw->Create(IDD_DIALOG_CHANGEPASSWORD, this);
-	changepw->ShowWindow(SW_SHOW);
+
+	m_newpw1.GetWindowTextW(INPUT_pw1);
+	m_newpw2.GetWindowTextW(INPUT_pw2);
+
+	if (INPUT_pw1.GetLength() > 6 && INPUT_pw1.GetLength() < 11)
+	{
+		if(INPUT_pw2.GetLength() > 6 && INPUT_pw2.GetLength() < 11)
+		{
+			if (INPUT_pw1 == INPUT_pw2)
+			{
+				MessageBox(_T("Password가 변경되었습니다."), _T("Password1 Valid"), MB_OK);
+			}
+			else
+			{
+				MessageBox(_T("Password가 서로 다릅니다."), _T("Password1 Valid"), MB_ICONERROR);
+			}
+		}
+		else
+		{
+			MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
+		}
+	}
+	else 
+	{
+		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
+	}
+	//changepw = new ChangePassword();
+	//changepw->Create(IDD_DIALOG_CHANGEPASSWORD, this);
+	//changepw->ShowWindow(SW_SHOW);
+
 }
 
 

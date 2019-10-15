@@ -32,6 +32,8 @@ void UserPassword::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(UserPassword, CDialogEx)
 	ON_BN_CLICKED(IDOK, &UserPassword::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &UserPassword::OnBnClickedCancel)
+	//ON_EN_CHANGE(IDC_EDIT2, &UserPassword::OnEnChangeEdit2)
+	//ON_EN_CHANGE(IDC_EDIT1, &UserPassword::OnEnChangeEdit1)
 END_MESSAGE_MAP()
 
 
@@ -43,37 +45,41 @@ void UserPassword::OnBnClickedOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	//CDialogEx::OnOK();
 	///< get password1
-
 	m_editPassword1.GetWindowTextW(m_strPassword);
+	///< get password2
+	m_editPassword2.GetWindowTextW(m_strPasswordcheck);
+
 	//TODO: PW의 Arg 유효성 점검(String Max 길이,유효하지 못한 문자 포함 여부??)
 	if (m_strPassword.GetLength() > 6 && m_strPassword.GetLength() < 11)
 	{
-		MessageBox(_T("Password 적합"), _T("Password1 Valid"), MB_OK);
 		ps1 = 1;
+		if (m_strPasswordcheck.GetLength() > 6 && m_strPasswordcheck.GetLength() < 11)
+		{
+			ps2 = 1;
+			///< compare password1 with password2
+			if (m_strPassword == m_strPasswordcheck) 
+			{
+				CheckPW(m_strPassword, m_strPasswordcheck);
+			}
+			if (ps3 == 1) 
+			{
+				CDialogEx::OnOK();
+				MainDialog maindlg;
+				maindlg.DoModal();
+			}
+			else if (m_strPassword != m_strPasswordcheck)
+			{
+				MessageBox(_T("Password가 서로 다릅니다."), _T("Password Valid"), MB_ICONERROR);
+			}
+		}
+		else
+		{
+			MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password2 Valid"), MB_ICONERROR);
+		}
 	}
-	else {
-		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
-
-	}
-	///< get password2
-	m_editPassword2.GetWindowTextW(m_strPasswordcheck);
-	if (m_strPasswordcheck.GetLength() > 6 && m_strPasswordcheck.GetLength() < 11)
+	else
 	{
-		MessageBox(_T("Password 적합"), _T("Password2 Valid"), MB_OK);
-		ps2 = 1;
-	}
-	else {
-		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password2 Valid"), MB_ICONERROR);
-
-	}
-	///< compare password1 with password2
-	if (ps1 == 1 && ps2 == 1) {
-		CheckPW(m_strPassword, m_strPasswordcheck);
-	}
-	if (ps3 == 1) {
-		CDialogEx::OnOK();
-		MainDialog maindlg;
-		maindlg.DoModal();
+		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
 	}
 
 }

@@ -7,7 +7,7 @@
 #include "SearchDogInfo.h"
 #include "SearchDogInfoDlg.h"
 #include "afxdialogex.h"
-#include "OpenCam.h"
+#include "CameraMgr.h"
 #include "opencv2/opencv.hpp"
 
 using namespace std;
@@ -69,7 +69,6 @@ BEGIN_MESSAGE_MAP(CSearchDogInfoDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_OpenCamera, &CSearchDogInfoDlg::OnBnClickedOpencamera)
 	ON_BN_CLICKED(IDC_LodaImage, &CSearchDogInfoDlg::OnBnClickedLodaimage)
-	ON_BN_CLICKED(IDC_SearchDog, &CSearchDogInfoDlg::OnBnClickedSearchdog)
 END_MESSAGE_MAP()
 
 
@@ -163,7 +162,7 @@ HCURSOR CSearchDogInfoDlg::OnQueryDragIcon()
 void CSearchDogInfoDlg::OnBnClickedOpencamera()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	OpenCam oc;
+	CameraMgr oc;
 	oc.DoModal();
 }
 
@@ -201,7 +200,3 @@ void CSearchDogInfoDlg::OnBnClickedLodaimage()
 	}
 }
 
-void CSearchDogInfoDlg::OnBnClickedSearchdog()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-}

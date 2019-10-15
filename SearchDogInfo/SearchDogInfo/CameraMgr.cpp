@@ -30,9 +30,9 @@ void CameraMgr::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CameraMgr, CDialogEx)
-	ON_BN_CLICKED(IDC_TakePhoto, &CameraMgr::OnBnClickedTakephoto)
-	ON_STN_CLICKED(IDC_Camera, &CameraMgr::OnStnClickedCamera)
+BEGIN_MESSAGE_MAP(OpenCam, CDialogEx)
+	ON_BN_CLICKED(IDC_TakePhoto, &OpenCam::OnBnClickedTakephoto)
+	ON_STN_CLICKED(IDC_Camera, &OpenCam::OnStnClickedCamera)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
@@ -41,21 +41,19 @@ END_MESSAGE_MAP()
 // OpenCam 메시지 처리기
 
 
-void CameraMgr::OnBnClickedTakephoto()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//카메라 화면 찍은걸로 멈춤
-	KillTimer(1000);
-}
-
-
-void CameraMgr::OnStnClickedCamera()
+void OpenCam::OnBnClickedTakephoto()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 
 
-void CameraMgr::OnDestroy()
+void OpenCam::OnStnClickedCamera()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void OpenCam::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
@@ -63,14 +61,19 @@ void CameraMgr::OnDestroy()
 }
 
 
-void CameraMgr::OnTimer(UINT_PTR nIDEvent)
+void OpenCam::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	//mat_frame가 입력 이미지입니다. 
 	capture->read(mat_frame);
 
+
+
 	//이곳에 OpenCV 함수들을 적용합니다.
+
+	//여기에서는 그레이스케일 이미지로 변환합니다.
+	//cvtColor(mat_frame, mat_frame, COLOR_BGR2GRAY);
 
 	//화면에 보여주기 위한 처리입니다.
 	int bpp = 8 * mat_frame.elemSize();
@@ -187,7 +190,7 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-BOOL CameraMgr::OnInitDialog()
+BOOL OpenCam::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 

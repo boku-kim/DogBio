@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "OpenCam.h"
+#include "CameraMgr.h"
 #include "opencv2/opencv.hpp"
 
 using namespace std;
@@ -39,5 +39,5 @@ public:
 	afx_msg void OnBnClickedOpencamera();
 	afx_msg void OnBnClickedLodaimage();
 	CStatic m_PIC;
-	afx_msg void OnBnClickedSearchdog();
+
 };
