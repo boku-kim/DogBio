@@ -39,4 +39,5 @@ public:
 	afx_msg void OnBnClickedOpencamera();
 	afx_msg void OnBnClickedLodaimage();
 	CStatic m_PIC;
+
 };

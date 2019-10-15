@@ -199,3 +199,4 @@ void CSearchDogInfoDlg::OnBnClickedLodaimage()
 		pDc = NULL;
 	}
 }
+

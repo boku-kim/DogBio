@@ -81,6 +81,7 @@ void UserPassword::OnBnClickedOk()
 	{
 		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
 	}
+
 }
 
 

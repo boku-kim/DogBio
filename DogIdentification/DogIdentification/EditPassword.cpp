@@ -42,7 +42,6 @@ END_MESSAGE_MAP()
 void EditPassword::OnBnClickedBtnCheck()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
 	if (1)
 	{
 		MessageBox(_T("확인되었습니다."), _T("Password1 Valid"), MB_OK);
@@ -50,6 +49,7 @@ void EditPassword::OnBnClickedBtnCheck()
 	//checkpw = new CheckPassword();
 	//checkpw->Create(IDD_DIALOG_CHECKPASSWORD, this);
 	//checkpw->ShowWindow(SW_SHOW);
+
 }
 
 
@@ -85,6 +85,7 @@ void EditPassword::OnBnClickedBtnChange()
 	//changepw = new ChangePassword();
 	//changepw->Create(IDD_DIALOG_CHANGEPASSWORD, this);
 	//changepw->ShowWindow(SW_SHOW);
+
 }
 
 

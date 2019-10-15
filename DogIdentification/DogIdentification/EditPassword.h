@@ -13,7 +13,6 @@ public:
 	ChangePassword* changepw;
 	CString INPUT_pw1;
 	CString INPUT_pw2;
-
 	EditPassword(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~EditPassword();
 

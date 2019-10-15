@@ -7,7 +7,7 @@
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -15,13 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SearchDogInfo.h">
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dogdog191002.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SearchDogInfoDlg.h">
+    <ClInclude Include="dogdog191002Dlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="stdafx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
@@ -30,40 +33,36 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Cameramgr.h">
+    <ClInclude Include="source\inc\TestDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SearchDogInfo.cpp">
+    <ClCompile Include="dogdog191002.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SearchDogInfoDlg.cpp">
+    <ClCompile Include="dogdog191002Dlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-
-    <ClCompile Include="CameraMgr.cpp">
+    <ClCompile Include="source\source\TestDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SearchDogInfo.rc">
+    <ResourceCompile Include="dogdog191002.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\SearchDogInfo.rc2">
+    <None Include="res\dogdog191002.rc2">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\SearchDogInfo.ico">
+    <Image Include="res\dogdog191002.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

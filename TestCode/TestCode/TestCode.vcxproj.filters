@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\acess_manager">
+      <UniqueIdentifier>{d518c42d-f02a-4ee0-9fcd-1e3182741055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\access_manager">
+      <UniqueIdentifier>{5d42de80-9c1c-48ef-a4a4-f9283a1915ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\storage_manager">
+      <UniqueIdentifier>{76f75f77-68cf-42bc-8742-1bd713148817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\storage_manager">
+      <UniqueIdentifier>{de462445-21fd-4e4e-a1c8-021c53e904f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\util">
+      <UniqueIdentifier>{bbf89cc0-b814-4df7-9074-7f81a3480f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\util">
+      <UniqueIdentifier>{d546b43d-cd98-4b50-b8ba-a7187c09e4a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\camera_manager">
+      <UniqueIdentifier>{92be7a96-63d1-42ff-ad73-5a2167cbb9c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\camera_manager">
+      <UniqueIdentifier>{bd6fedf0-51d6-4036-8ade-5cb22f1a9961}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TestCode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCodeDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_system.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\en_string.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ko_string.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\error_define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\access_manager\AccessMgr.h">
+      <Filter>헤더 파일\access_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\storage_manager\StorageMgr.h">
+      <Filter>헤더 파일\storage_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\inc\utility\Util.h">
+      <Filter>헤더 파일\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UserPassword.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DogRegister.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMgr.h">
+      <Filter>헤더 파일\camera_manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TestCode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCodeDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\access_manager\AccessMgr.cpp">
+      <Filter>소스 파일\acess_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\storage_manager\StorageMgr.cpp">
+      <Filter>소스 파일\storage_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\utility\Util.cpp">
+      <Filter>소스 파일\util</Filter>
+    </ClCompile>
+    <ClCompile Include="UserPassword.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DogRegister.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMgr.cpp">
+      <Filter>소스 파일\camera_manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestCode.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\TestCode.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\TestCode.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

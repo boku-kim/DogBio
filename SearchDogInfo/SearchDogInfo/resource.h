@@ -14,6 +14,7 @@
 #define IDC_Camera                      1005
 #define IDC_Picture                     1006
 
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

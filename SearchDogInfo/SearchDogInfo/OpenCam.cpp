@@ -3,26 +3,25 @@
 
 #include "pch.h"
 #include "SearchDogInfo.h"
-#include "CameraMgr.h"
+#include "OpenCam.h"
 #include "afxdialogex.h"
 
 
 // OpenCam 대화 상자
 
-IMPLEMENT_DYNAMIC(CameraMgr, CDialogEx)
+IMPLEMENT_DYNAMIC(OpenCam, CDialogEx)
 
-CameraMgr::CameraMgr(CWnd* pParent /*=nullptr*/)
+OpenCam::OpenCam(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_Camera, pParent)
 {
 
 }
 
-CameraMgr::~CameraMgr()
+OpenCam::~OpenCam()
 {
-
 }
 
-void CameraMgr::DoDataExchange(CDataExchange* pDX)
+void OpenCam::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	//DDX_Control(pDX, IDCANCEL, m_camera);
@@ -35,6 +34,8 @@ BEGIN_MESSAGE_MAP(OpenCam, CDialogEx)
 	ON_STN_CLICKED(IDC_Camera, &OpenCam::OnStnClickedCamera)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDOK, &OpenCam::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &OpenCam::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -44,6 +45,8 @@ END_MESSAGE_MAP()
 void OpenCam::OnBnClickedTakephoto()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//카메라 화면 찍은걸로 멈춤
+	KillTimer(1000);
 }
 
 
@@ -75,6 +78,7 @@ void OpenCam::OnTimer(UINT_PTR nIDEvent)
 	//여기에서는 그레이스케일 이미지로 변환합니다.
 	//cvtColor(mat_frame, mat_frame, COLOR_BGR2GRAY);
 
+
 	//화면에 보여주기 위한 처리입니다.
 	int bpp = 8 * mat_frame.elemSize();
 	assert((bpp == 8 || bpp == 24 || bpp == 32));
@@ -93,8 +97,6 @@ void OpenCam::OnTimer(UINT_PTR nIDEvent)
 	{
 		border = 4 - (mat_frame.cols % 4);
 	}
-
-
 
 	Mat mat_temp;
 	if (border > 0 || mat_frame.isContinuous() == false)
@@ -202,12 +204,43 @@ BOOL OpenCam::OnInitDialog()
 		MessageBox(_T("캠을 열수 없습니다. \n"));
 	}
 
-	//웹캠 크기를  320x240으로 지정    
+	//웹캠 크기를  320x300으로 지정    
 	capture->set(CAP_PROP_FRAME_WIDTH, 320);
-	capture->set(CAP_PROP_FRAME_HEIGHT, 240);
+	capture->set(CAP_PROP_FRAME_HEIGHT, 300);
 
 	SetTimer(1000, 30, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+}
+
+
+void OpenCam::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CRect rect;
+	m_picDog->GetClientRect(rect);
+	int iwidth, iheight;
+	iwidth = rect.Width();
+	iheight = rect.Height();
+
+	cimage_mfc.Create(iwidth, iwidth, 24);
+	StretchDIBits(cimage_mfc.GetDC(), 0, 0, iwidth, iheight, 0, 0, iwidth, iheight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+
+	HDC dc = ::GetDC(m_picDog->m_hWnd);
+	//cimage_mfc.BitBlt(dc, 0, 0); //화면에 띄움
+	cimage_mfc.TransparentBlt(dc, 0, 0, iwidth, iheight, SRCCOPY);
+	::ReleaseDC(m_camera.m_hWnd, dc);
+
+	cimage_mfc.ReleaseDC();
+	cimage_mfc.Destroy();
+
+	CDialogEx::OnOK();
+}
+
+
+void OpenCam::OnBnClickedCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogEx::OnCancel();
 }
