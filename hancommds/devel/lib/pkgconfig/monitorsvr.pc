@@ -1,0 +1,8 @@
+prefix=/home/boku/hancommds/devel
+
+Name: monitorsvr
+Description: Description of monitorsvr
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/boku/hancommds/devel/lib 
+Requires: 
