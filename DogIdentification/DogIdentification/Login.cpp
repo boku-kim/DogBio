@@ -5,7 +5,6 @@
 #include "DogIdentification.h"
 #include "Login.h"
 #include "afxdialogex.h"
-#include "MainDialog.h"
 
 // Login 대화 상자
 

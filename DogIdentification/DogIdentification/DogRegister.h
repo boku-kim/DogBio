@@ -42,4 +42,5 @@ public:
 	afx_msg void RadioCtrl(UINT ID);
 	
 	afx_msg void OnBnClickedOk();
+	CButton m_analysis;
 };

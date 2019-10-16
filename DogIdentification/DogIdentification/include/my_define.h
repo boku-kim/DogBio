@@ -4,6 +4,8 @@
 #define MY_DATA_PATH                "C:\\Users\\EDU\\Desktop\\boku\\DogIdentification\\x64\\Debug"
 #define MY_PASSWORD_FILE_PATH       "C:\\Users\\EDU\\Desktop\\boku\\DogIdentification\\x64\\Debug\\data\\passwd.txt"
 
+#define MY_PASSWORD_FILENAME        "system_password"
+
 
 enum eSecurityType
 {

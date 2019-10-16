@@ -20,6 +20,10 @@ DogRegister::DogRegister(CWnd* pParent /*=nullptr*/)
 
 DogRegister::~DogRegister()
 {
+    if (m_bmpBitmap.IsNull() != true)
+    {
+        m_bmpBitmap.Destroy();
+    }
 }
 
 void DogRegister::DoDataExchange(CDataExchange* pDX)
@@ -31,6 +35,7 @@ void DogRegister::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_DOGSPECIES, m_editSpecies);
 	DDX_Control(pDX, IDC_EDIT_DOGADDR, m_editAddr);
 	DDX_Radio(pDX, IDC_RADIO_MALE, (int&)m_radiogender);
+	DDX_Control(pDX, IDC_BTN_ANALYSIS, m_analysis);
 }
 
 
@@ -61,13 +66,14 @@ void DogRegister::OnBnClickedBtnLoadimg()
 
 		// 이미지 경로 획득
 		CString img_path = filedlg.GetPathName();
-		CDC* pDc;
+		CDC* pDc = NULL;
 		pDc = m_picDog.GetWindowDC();
 		CDC memdc;
 
-		int width, height;
+        int width = 0;
+        int height = 0;
 		m_bmpBitmap.Destroy();
-		m_bmpBitmap.Load(img_path);
+		m_bmpBitmap.Load(img_path); // error check
 		width = m_bmpBitmap.GetWidth();
 		height = m_bmpBitmap.GetHeight();
 		memdc.CreateCompatibleDC(pDc);
@@ -77,6 +83,10 @@ void DogRegister::OnBnClickedBtnLoadimg()
 		pDc = NULL;
 
 	}
+    else
+    {
+        AfxMessageBox("failed.");
+    }
 }
 
 
@@ -92,17 +102,19 @@ void DogRegister::OnBnClickedBtnOpencamera()
 void DogRegister::OnBnClickedBtnAnalysis()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	MessageBox(_T("분석완료. 추가 정보를 입력해주세요"), _T("Analysis complete"), MB_OK);
 }
 
 
 void DogRegister::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_editDogname.GetWindowTextW(m_dogName);
-	m_editAge.GetWindowTextW(m_dogAge);
-	m_editSpecies.GetWindowTextW(m_dogSpecies);
-	m_editAddr.GetWindowTextW(m_dogAddr);
+	m_editDogname.GetWindowTextA(m_dogName);
+	m_editAge.GetWindowTextA(m_dogAge);
+	m_editSpecies.GetWindowTextA(m_dogSpecies);
+	m_editAddr.GetWindowTextA(m_dogAddr);
 	if (Checkarg()) {
+		MessageBox(_T("저장되었습니다."), _T("Save Complete"), MB_OK);
 		CDialogEx::OnOK();
 	}
 }
@@ -111,10 +123,10 @@ void DogRegister::RadioCtrl(UINT ID) {
 	switch (m_radiogender)
 	{
 	case 0:
-		m_gender.SetString((LPCWSTR)"male");
+		m_gender.SetString("male");
 		break;
 	case 1:
-		m_gender.SetString((LPCWSTR)"female");
+		m_gender.SetString("female");
 		break;
 	default:
 		break;

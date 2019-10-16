@@ -2,13 +2,14 @@
 #define _ACCESS_MGR_H_
 
 #include "my_system.h"
-#include "AccessMgr.h"
 
 class AccessMgr
 {
+public:
+    virtual ~AccessMgr();
+
 private:
-    AccessMgr();
-    ~AccessMgr();
+    AccessMgr();    
 
 public:
     static AccessMgr* GetInstance();

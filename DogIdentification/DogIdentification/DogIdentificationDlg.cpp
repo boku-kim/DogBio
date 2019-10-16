@@ -22,7 +22,6 @@
 #endif
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
-
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -54,12 +53,12 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
+
 // CDogIdentificationDlg 대화 상자
-
-
-
 CDogIdentificationDlg::CDogIdentificationDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DOGIDENTIFICATION_DIALOG, pParent)
+    , m_bAlreadySetPasswd(false)
+    , m_currentPath("")
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -73,6 +72,11 @@ BEGIN_MESSAGE_MAP(CDogIdentificationDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BTN_EDITPW, &CDogIdentificationDlg::OnBnClickedBtnEditpw)
+	ON_BN_CLICKED(IDC_BTN_REGISTERDOGINFO, &CDogIdentificationDlg::OnBnClickedBtnRegisterdoginfo)
+	ON_BN_CLICKED(IDC_BTN_SEARCHDOGINFO, &CDogIdentificationDlg::OnBnClickedBtnSearchdoginfo)
+	ON_BN_CLICKED(IDOK, &CDogIdentificationDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CDogIdentificationDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -108,8 +112,12 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+
+    DecideCurrentModulePath(m_currentPath);
+
 	 /*Util* instUtil = new Util();
 	delete instUtil;*/
+    int nSuccessProcessPasswd = 0;
 	if (TestFunction01() == eMOD_ERROR_SUCCESS)
 	{
 		Login login_dlg;
@@ -122,18 +130,33 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 		///< UserPassword dlgPass;
 		///< dlgPass.sdfsd();
 		///< dlgPass.password
+        
 		UserPassword dlg;
-		dlg.DoModal();
-		CString strPassword = dlg.GetPassword();
+        INT_PTR nRet = -1;
+        int nPasswdSuccess = 0;
+        nRet = dlg.DoModal();
+        if (nRet == IDOK)
+        {
+            nPasswdSuccess = dlg.GetPasswdSuccess();
+            if (nPasswdSuccess == 1)
+            {
+                CString strPassword = dlg.GetPassword();
 
-		//const char pconstUserPassword[] = "1234567890";
-		AccessMgr* pAccessInst = AccessMgr::GetInstance();
-		if (pAccessInst)
-		{
-			pAccessInst->RegisterPassword((LPSTR)(LPCTSTR)strPassword, eSECURITY_TYPE_IMPORTANT);
-		}
+                //const char pconstUserPassword[] = "1234567890";
+                AccessMgr* pAccessInst = AccessMgr::GetInstance();
+                if (pAccessInst)
+                {
+                    pAccessInst->RegisterPassword((LPSTR)(LPCTSTR)strPassword, eSECURITY_TYPE_IMPORTANT);
+                    nSuccessProcessPasswd = 1;
+                }
+            } 
+        }
 	}
-	
+
+    if (nSuccessProcessPasswd == 0)
+    {
+       // PostQuitMessage(0);
+    }
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -220,4 +243,68 @@ eModError CDogIdentificationDlg::TestFunction01() {
 	}
 
 	return ret;
+}
+
+///< Get current module's path
+void CDogIdentificationDlg::DecideCurrentModulePath(CString& strPath)
+{
+    char szPath[MAX_PATH] = { 0 };
+    char chDelimiter = '\\';
+    int bytes = GetModuleFileName(NULL, szPath, MAX_PATH);
+    if (bytes == 0)
+    {
+        return;
+    }
+    strPath.Format("%s", szPath);
+    int full_len = strPath.GetLength();
+    int pos = strPath.ReverseFind(chDelimiter);
+    ++pos; ///< including delimiter(\)
+    strPath = strPath.Left(full_len - (full_len - pos));
+
+    OutputDebugString((LPTSTR)(LPCTSTR)strPath);
+    OutputDebugString("\n");
+}
+
+void CDogIdentificationDlg::GetCurrentModulePath(CString& strPath)
+{
+    strPath = m_currentPath;
+}
+
+
+
+void CDogIdentificationDlg::OnBnClickedBtnEditpw()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	EditPassword dlgEditPassword;
+	dlgEditPassword.DoModal();
+}
+
+
+void CDogIdentificationDlg::OnBnClickedBtnRegisterdoginfo()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	DogRegister dlgDogRegister;
+	dlgDogRegister.DoModal();
+}
+
+
+void CDogIdentificationDlg::OnBnClickedBtnSearchdoginfo()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	SearchDogInfo dlgSearchDogInfo;
+	dlgSearchDogInfo.DoModal();
+}
+
+
+void CDogIdentificationDlg::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogEx::OnOK();
+}
+
+
+void CDogIdentificationDlg::OnBnClickedCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogEx::OnCancel();
 }

@@ -20,8 +20,9 @@ public:
 public:
 	int CheckPW(CString str1, CString str2);
 	int CheckArg(CString str3);
+    int GetPasswdSuccess();
 	CString GetPassword();
-	StorageMgr m_stors;
+	///<StorageMgr m_stors;
 	
 private:
 	CString m_strPassword;
@@ -31,6 +32,7 @@ private:
 	int ps1;
 	int ps2;
 	int ps3;
+    int m_nSucces;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

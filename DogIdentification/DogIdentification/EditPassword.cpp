@@ -49,20 +49,18 @@ void EditPassword::OnBnClickedBtnCheck()
 	//checkpw = new CheckPassword();
 	//checkpw->Create(IDD_DIALOG_CHECKPASSWORD, this);
 	//checkpw->ShowWindow(SW_SHOW);
-
 }
 
 
 void EditPassword::OnBnClickedBtnChange()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
-	m_newpw1.GetWindowTextW(INPUT_pw1);
-	m_newpw2.GetWindowTextW(INPUT_pw2);
+	m_newpw1.GetWindowTextA(INPUT_pw1);
+	m_newpw2.GetWindowTextA(INPUT_pw2);
 
 	if (INPUT_pw1.GetLength() > 6 && INPUT_pw1.GetLength() < 11)
 	{
-		if(INPUT_pw2.GetLength() > 6 && INPUT_pw2.GetLength() < 11)
+		if (INPUT_pw2.GetLength() > 6 && INPUT_pw2.GetLength() < 11)
 		{
 			if (INPUT_pw1 == INPUT_pw2)
 			{
@@ -78,7 +76,7 @@ void EditPassword::OnBnClickedBtnChange()
 			MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
 		}
 	}
-	else 
+	else
 	{
 		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
 	}

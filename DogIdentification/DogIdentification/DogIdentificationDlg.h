@@ -10,7 +10,6 @@
 #include "Util.h"
 
 
-
 // CDogIdentificationDlg 대화 상자
 class CDogIdentificationDlg : public CDialogEx
 {
@@ -38,9 +37,24 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 
+public:
+    void GetCurrentModulePath(CString& strPath);
+
+private:
+    void DecideCurrentModulePath(CString& strPath);
+    
+
+    
+
 private:
 	bool m_bAlreadySetPasswd;
+    CString m_currentPath;
 
 public:
 	eModError TestFunction01();
+	afx_msg void OnBnClickedBtnEditpw();
+	afx_msg void OnBnClickedBtnRegisterdoginfo();
+	afx_msg void OnBnClickedBtnSearchdoginfo();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
 };
