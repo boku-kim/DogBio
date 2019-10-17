@@ -5,6 +5,7 @@
 #include "DogIdentification.h"
 #include "DogRegister.h"
 #include "afxdialogex.h"
+#include "DbAccess.h"
 
 
 // DogRegister 대화 상자
@@ -15,6 +16,7 @@ DogRegister::DogRegister(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_DOGREGISTER, pParent)
 	, m_radiogender(0)
 {
+	m_gender = "male";
 
 }
 
@@ -114,6 +116,8 @@ void DogRegister::OnBnClickedOk()
 	m_editSpecies.GetWindowTextA(m_dogSpecies);
 	m_editAddr.GetWindowTextA(m_dogAddr);
 	if (Checkarg()) {
+		DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr);
+		DbAccess::DbInsert();
 		MessageBox(_T("저장되었습니다."), _T("Save Complete"), MB_OK);
 		CDialogEx::OnOK();
 	}

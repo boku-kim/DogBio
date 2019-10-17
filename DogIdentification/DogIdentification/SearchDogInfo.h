@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CameraMgr.h"
 
+
 // SearchDogInfo 대화 상자
 
 class SearchDogInfo : public CDialogEx
@@ -25,17 +26,18 @@ private:
 	CEdit m_editdogage;
 	CEdit m_editspecies;
 	CEdit m_editaddr;
-	UINT m_radiogender;
+	int m_radiogender;
 
-	CString m_dogName;
-	CString m_dogAge;
-	CString m_dogSpecies;
-	CString m_dogAddr;
-	CString m_gender;
 
 	bool e_flag;
 	HICON m_hIcon;
 public:
+	static CString m_dogName;
+	static CString m_dogAge;
+	static CString m_dogSpecies;
+	static CString m_dogAddr;
+	static CString m_gender;
+
 	
 	CStatic m_PIC;
 	CImage m_bmpBitmap;

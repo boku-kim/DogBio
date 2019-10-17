@@ -155,7 +155,6 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 
     if (nSuccessProcessPasswd == 0)
     {
-        PostQuitMessage(0);
     }
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
@@ -306,5 +305,6 @@ void CDogIdentificationDlg::OnBnClickedOk()
 void CDogIdentificationDlg::OnBnClickedCancel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
 	CDialogEx::OnCancel();
 }

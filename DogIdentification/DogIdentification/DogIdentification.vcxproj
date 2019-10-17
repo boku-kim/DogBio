@@ -205,6 +205,7 @@
   <ItemGroup>
     <ClInclude Include="ChangePassword.h" />
     <ClInclude Include="CheckPassword.h" />
+    <ClInclude Include="DbAccess.h" />
     <ClInclude Include="DogIdentification.h" />
     <ClInclude Include="DogIdentificationDlg.h" />
     <ClInclude Include="DogRegister.h" />
@@ -233,6 +234,7 @@
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <ClCompile Include="CheckPassword.cpp" />
+    <ClCompile Include="DbAccess.cpp" />
     <ClCompile Include="DogIdentification.cpp" />
     <ClCompile Include="DogIdentificationDlg.cpp" />
     <ClCompile Include="DogRegister.cpp" />
