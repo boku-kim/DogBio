@@ -28,13 +28,10 @@ private:
 	CEdit m_editaddr;
 	int m_radiogender;
 
-	
 
 	bool e_flag;
 	HICON m_hIcon;
 public:
-
-
 	static CString m_dogName;
 	static CString m_dogAge;
 	static CString m_dogSpecies;
