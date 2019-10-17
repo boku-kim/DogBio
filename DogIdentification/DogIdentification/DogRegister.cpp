@@ -17,6 +17,7 @@ DogRegister::DogRegister(CWnd* pParent /*=nullptr*/)
 	, m_radiogender(0)
 {
 	m_gender = "male";
+
 }
 
 DogRegister::~DogRegister()

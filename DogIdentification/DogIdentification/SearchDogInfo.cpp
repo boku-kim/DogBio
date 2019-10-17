@@ -10,14 +10,13 @@
 
 // SearchDogInfo 대화 상자
 
+
 CString SearchDogInfo::m_dogName;
 CString SearchDogInfo::m_dogAge;
 CString SearchDogInfo::m_dogSpecies;
 CString SearchDogInfo::m_dogAddr;
 CString SearchDogInfo::m_gender;
-
 IMPLEMENT_DYNAMIC(SearchDogInfo, CDialogEx)
-
 SearchDogInfo::SearchDogInfo(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_SEARCHDOGINFO, pParent)
 	, m_radiogender(0)
@@ -207,7 +206,6 @@ void SearchDogInfo::OnBnClickedBtn1()
 
 		DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr);
 		DbAccess::DbUpdate();
-
 		MessageBox(_T("저장 완료"), _T("Save Complete"), MB_OK);
 		EditOffMode();
 	}
@@ -236,7 +234,6 @@ void SearchDogInfo::OnBnClickedBtn2()
 		MessageBox(_T("삭제 완료"), _T("Delete Complete"), MB_OK);
 	}
 
-
 	else
 	{
 		e_flag = !e_flag;
@@ -254,6 +251,7 @@ BOOL SearchDogInfo::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO_MALE))->SetCheck(0);
 	m_btn_left.ShowWindow(0);
 	m_btn_right.ShowWindow(0);
+
 	EditOffMode();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
