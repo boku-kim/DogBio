@@ -60,6 +60,8 @@
 using namespace cv;
 using namespace std;
 
+#define SAVE_PATH "C:\\DogIdentification"
+#define IMAGE_PATH "Image"
 
 #ifdef _UNICODE
 #if defined _M_IX86

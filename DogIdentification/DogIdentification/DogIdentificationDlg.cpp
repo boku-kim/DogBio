@@ -16,6 +16,7 @@
 #include "Login.h"
 #include "EditPassword.h"
 #include "SearchDogInfo.h"
+#include <io.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -114,6 +115,15 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 
     DecideCurrentModulePath(m_currentPath);
+
+
+
+	int nResult = _access(SAVE_PATH, 0);
+	if (nResult==-1)
+	{
+		CreateDirectory((LPCTSTR)SAVE_PATH, NULL);
+	}
+	
 
 	 /*Util* instUtil = new Util();
 	delete instUtil;*/
