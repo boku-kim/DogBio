@@ -36,6 +36,7 @@ private:
 
 public:
 	CStatic* m_picDog; //dog register에서 가져온것.
+	CImage* save_img; //bitmap이미지를 전달할 객체
 	static CameraMgr* GetInstance();
 	static void ReleaseInstance();
 	afx_msg void OnBnClickedBtnTake();
