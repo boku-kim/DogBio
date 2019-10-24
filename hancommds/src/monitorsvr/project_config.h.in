@@ -1,3 +1,0 @@
-#define MOD_VERSION_MAJOR  @dog-tracker_VERSION_MAJOR@
-#define MOD_VERSION_MINOR  @dog-tracker_VERSION_MINOR@
-

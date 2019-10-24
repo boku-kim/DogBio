@@ -7,6 +7,9 @@
 #include "afxdialogex.h"
 #include "DbAccess.h"
 
+#include <io.h>
+#include <fstream>
+
 
 // DogRegister 대화 상자
 
@@ -97,6 +100,9 @@ void DogRegister::OnBnClickedBtnOpencamera()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CameraMgr* pCameraInst = CameraMgr::GetInstance();
 	pCameraInst->m_picDog = &(this->m_picDog);
+	//m_bmpBitmap.Destroy();
+	pCameraInst->save_img = &m_bmpBitmap;
+
 	pCameraInst->DoModal();
 }
 
@@ -116,6 +122,42 @@ void DogRegister::OnBnClickedOk()
 	m_editSpecies.GetWindowTextA(m_dogSpecies);
 	m_editAddr.GetWindowTextA(m_dogAddr);
 	if (Checkarg()) {
+
+		CString file_name;
+		CString path_name;
+		path_name.Format("%s\\%s", SAVE_PATH, IMAGE_PATH);
+
+		int nResult = _access(path_name, 0);  //디렉토리 있으면 0, 없으면 -1반환
+		if (nResult) //없으면 dir 생성
+		{
+			MessageBox(_T("we make folder in %s",path_name), _T("Save Complete"), MB_OK);
+			CreateDirectory((LPCTSTR)path_name, NULL);
+		}
+
+		file_name.Format("%s\\%s.jpeg", path_name, m_dogName);
+		int fResult = _access(file_name, 0);//파일 있으면 0, 없으면 -1반환
+		int f_num = 1;
+		if (!fResult) //파일 있으면 이름에 숫자 붙이기
+		{
+					
+			while (1)
+			{
+				//s_dogName.Format("%s_%d", m_dogName, f_num);
+				file_name.Format("%s\\%s_%d.jpeg", path_name, m_dogName,f_num);
+				fResult = _access(file_name, 0);
+				if (fResult)
+				{
+					break;
+				}
+				else
+				{
+					f_num++;
+				}
+
+			}
+		}
+		m_bmpBitmap.Save(file_name, Gdiplus::ImageFormatJPEG);
+
 		DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr);
 		DbAccess::DbInsert();
 		MessageBox(_T("저장되었습니다."), _T("Save Complete"), MB_OK);
@@ -136,10 +178,40 @@ void DogRegister::RadioCtrl(UINT ID) {
 		break;
 	}
 }
+
+/*
+** m_dogAge에 숫자가 아닌 수를 넣으면 에러
+** 1~30까지만 가능
+*/
 int DogRegister::Checkarg() {
-	if (_ttoi(m_dogAge) > 30) {
-		MessageBox(_T("input 1~30"), _T("Wrong Age value"), MB_ICONWARNING);
-		return 0;
+
+	int ret = 1;
+
+	if (m_dogName == "")
+	{
+		MessageBox(_T("Write Dog Name"), _T("Wrong Name value"), MB_ICONWARNING);
+		ret = 0;
 	}
-	return 1;
+
+	else if (m_dogAge==""||_ttoi(m_dogAge) > 30 || _ttoi(m_dogAge) <= 0) 
+	{
+		MessageBox(_T("input number 1~30"), _T("Wrong Age value"), MB_ICONWARNING);
+		ret = 0;
+
+	}
+
+	else if (m_dogSpecies == "")
+	{
+		MessageBox(_T("Write Species "), _T("Wrong Species value"), MB_ICONWARNING);
+		ret = 0;
+	}
+
+	else if (m_dogAddr == "")
+	{
+		MessageBox(_T("Write Address"), _T("Wrong Address value"), MB_ICONWARNING);
+		ret = 0;
+	}
+
+	return ret;
+
 }
