@@ -37,7 +37,7 @@ void My_LogPrint(const char* function, int line, const char* szFormat, ...)
     rest_size = sizeof(szBuffFinal) - write_pos;
     if (rest_size >= (strlen(MY_LOG_DELIMETER) + 3))
     {
-        copy_size = strlen(MY_LOG_DELIMETER);
+        copy_size = (int)strlen(MY_LOG_DELIMETER);
     }
     else
     {
@@ -49,7 +49,7 @@ void My_LogPrint(const char* function, int line, const char* szFormat, ...)
     rest_size -= copy_size;
     if (rest_size >= (strlen(szBuff) + 3))
     {
-        copy_size = strlen(szBuff);
+        copy_size = (int)strlen(szBuff);
     }
     else
     {

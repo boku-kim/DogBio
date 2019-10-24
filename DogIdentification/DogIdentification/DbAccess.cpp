@@ -111,7 +111,7 @@ void DbAccess::DbOutting()
 	SearchDogInfo::m_dogAddr = _dog_info.address;
 	SearchDogInfo::m_dogimg = _dog_info.dogimg;
 
-	sprintf_s(szMessage, 128, "YOYOYOYOYOYOYYO %s  %s.\n", SearchDogInfo::m_dogName, _dog_info.id);
+	sprintf_s(szMessage, 128, "YOYOYOYOYOYOYYO %s  %s.\n", (LPTSTR)(LPCTSTR)SearchDogInfo::m_dogName, (LPTSTR)(LPCTSTR)_dog_info.id);
 	OutputDebugString(szMessage);
 }
 
@@ -173,10 +173,10 @@ void DbAccess::DbSearch()
 						//	rs.GetFieldValue("ID", _dog_id);
 						rs.GetFieldValue("ID", _dog_info.id);
 						rs.GetFieldValue("_NAME", _dog_info.name);
-						sprintf_s(szMessage, 128, "ID : %s \n", _dog_info.name);
+						sprintf_s(szMessage, 128, "ID : %s \n", (LPTSTR)(LPCTSTR)_dog_info.name);
 						OutputDebugString(szMessage);
 						rs.GetFieldValue("GENDER", _dog_info.gender);
-						sprintf_s(szMessage, 128, "GENDER : %s \n", _dog_info.gender);
+						sprintf_s(szMessage, 128, "GENDER : %s \n", (LPTSTR)(LPCTSTR)_dog_info.gender);
 						OutputDebugString(szMessage);
 						rs.GetFieldValue("AGE", _dog_info.age);
 						rs.GetFieldValue("SPECIES", _dog_info.species);
@@ -282,7 +282,8 @@ void DbAccess::DbInsert()
 						str.Format("INSERT INTO so_test_191008_1 (_NAME, GENDER, AGE ,SPECIES, ADDRESS, IMAGE) VALUES('%s','%s','%s','%s','%s','%s')", _dog_info.name, _dog_info.gender, _dog_info.age, _dog_info.species, _dog_info.address, _dog_info.dogimg);
 						//db.ExecuteSQL("INSERT INTO so_test_191008_1 (_NAME, GENDER ,AGE ,SPECIES, ADDRESS) VALUES('%s','%s','%s','%s')", _edit_name, _edit_age, _edit_species, _edit_address);
 						db.ExecuteSQL(str);
-						sprintf_s(szMessage, 128, "삽입!!\n", field_count);
+                        ///< Note : warning을 무시하지 마세요.
+						sprintf_s(szMessage, 128, "삽입(%d)!!\n", field_count);
 						OutputDebugString(szMessage);
 						//cout << "\n\n하나의필드를추가하였습니다." << endl;
 					}

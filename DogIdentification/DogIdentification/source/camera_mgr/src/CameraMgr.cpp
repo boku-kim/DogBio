@@ -152,7 +152,7 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 
 
 	//화면에 보여주기 위한 처리입니다.
-	int bpp = 8 * mat_frame.elemSize();
+	int bpp = 8 * (int)mat_frame.elemSize();
 	assert((bpp == 8 || bpp == 24 || bpp == 32));
 
 	int padding = 0;

@@ -12,7 +12,7 @@
  ***** + 각도로 거리값을 받는게 아닌 배열로 받은걸 바로 이용하려고 바꾸었습니다.
  ***** + "JHPWMPCA9685.h"헤더가 너무 긴게 꼴보기 싫어서 include에 포함시켰습니다.
  ***** + mutex를 전역으로 선언하였습니다. -> 선언은 main 에
- ***** + stru_sharedInfo에 거리 정보를 넣었고, 이 구조체에 접근 하는것을 뮤텍스로 제어(?)했습니다.  (하지만 사실 뭔지 모르겠습니다.)
+ ***** + g_sharedInfo_st에 거리 정보를 넣었고, 이 구조체에 접근 하는것을 뮤텍스로 제어(?)했습니다.  (하지만 사실 뭔지 모르겠습니다.)
  ***** + 각 위치별 평균값으로 받아서 했는데.... 별로인듯... -> 수정필요
  ***** + 알고리즘 어케짜냐...
  ***** + 뮤텍스랑 스레드 어떤식으로 짜야할지 감이 잘 오지 않
@@ -61,6 +61,8 @@ char thread2[]="value";
 // The nomenclature is for the ESC throttle, for the steering neutral is center,
 // full forward is right, full reverse is left
 
+#define CTL_IN_THREAD_TEST
+
 #define PWM_FULL_REVERSE 204 // 1ms/20ms * 4096
 #define PWM_NEUTRAL 307      // 1.5ms/20ms * 4096
 #define PWM_FULL_FORWARD 409 // 2ms/20ms * 4096
@@ -84,21 +86,6 @@ char thread2[]="value";
 float currentPWM = PWM_NEUTRAL;
 int currentChannel = ESC_CHANNEL;
 
-/*
-* pthread create를 위한 함수
-void * thread_increment(void *arg)      //thread가 수행하는 함수인데 여기서 무슨 쓸모인지 모르겠음...
-{
-
-    printf("%s\n",arg);
-
-    pthread_mutex_lock(&g_MutextForSharedInfo);
-
-    pthread_mutex_unlock(&g_MutextForSharedInfo);
-
-}
-*/
-
-//Add Thread
 
 /*
  * 라이더에서 받는 정보들을 담을 구조체...
@@ -140,7 +127,81 @@ typedef struct test_data
 
 
 
-AroundInfo stru_sharedInfo;
+
+AroundInfo g_sharedInfo_st = {0};
+
+#ifdef CTL_IN_THREAD_TEST
+pthread_t g_tid = 0;
+static unsigned int s_loop = 1;
+
+
+void* ros_car_handler(void* data)
+{
+    AroundInfo shared_info;
+
+
+    while (s_loop)
+    {
+        pthread_mutex_lock(&g_MutextForSharedInfo);
+        //shared_info 영역
+        shared_info = g_sharedInfo_st;
+        memset(&g_sharedInfo_st, 0x00, sizeof(AroundInfo));
+        pthread_mutex_unlock(&g_MutextForSharedInfo);
+
+        currentChannel = STEERING_CHANNEL;
+
+        if (shared_info.lidar_info.left_dis < 0.7)
+        {
+            currentPWM = PWM_LEFT;
+            // printf("Left_obstacle = %f \n", shared_info.lidar_info.left_dis);
+            printf("Left-");
+        }
+        else if (shared_info.lidar_info.right_dis < 0.7)
+        {
+            currentPWM = PWM_RIGHT;
+            // printf("Right_obstacle = %f\n", shared_info.lidar_info.right_dis);
+            printf("right-");
+        }
+        else
+        {
+            currentPWM = PWM_NEUTRAL;
+            printf("mid-");
+        }
+
+        pca9685->setPWM(currentChannel, 0, currentPWM);
+
+
+        currentChannel = ESC_CHANNEL;
+        //   printf("[YDLIDAR INFO]: angle : [%f, %f] i=%d\n", degree, distance, i);
+
+        float distance = shared_info.lidar_info.center_dis;
+
+        if(distance < STOP_DIST)
+        {
+            currentPWM = PWM_NEUTRAL;
+            printf("1. currentPWM1 = %f\n", currentPWM);
+        }
+        else if(distance >= STOP_DIST && distance < LOW_SPEED_DIST)
+        {
+            currentPWM = PWM_MIDDLE;
+            printf("2. currentPWM2 = %f\n", currentPWM);
+        }
+        else if(distance >= LOW_SPEED_DIST)
+        {
+            currentPWM = PWM_HIGH;
+            printf("3. currentPWM3 = %f\n", currentPWM);
+        }
+        else
+        {
+            currentPWM = PWM_NEUTRAL;
+            printf("4. currentPWM1 = %f\n", currentPWM);
+        }
+        pca9685->setPWM(currentChannel, 0, currentPWM);
+    } // end while (s_loop)
+    //printf("currunetCH: %d\n", currentChannel);
+}
+#endif // CTL_IN_THREAD_TEST
+
 
 int do_Logic()
 {
@@ -148,7 +209,7 @@ int do_Logic()
     AroundInfo shared_info;
     pthread_mutex_lock(&g_MutextForSharedInfo);
     //shared_info 영역
-    shared_info = stru_sharedInfo;
+    shared_info = g_sharedInfo_st;
     pthread_mutex_unlock(&g_MutextForSharedInfo);
 
 
@@ -207,70 +268,55 @@ int do_Logic()
 
         if (shared_info.lidar_info.left_dis < 0.7)
         {
-
             currentPWM = PWM_LEFT;
             // printf("Left_obstacle = %f \n", shared_info.lidar_info.left_dis);
             printf("Left-");
-
          }
         else if (shared_info.lidar_info.right_dis < 0.7)
         {
-
             currentPWM = PWM_RIGHT;
             // printf("Right_obstacle = %f\n", shared_info.lidar_info.right_dis);
             printf("right-");
-
         }
-
         else
         {
             currentPWM = PWM_NEUTRAL;
              printf("mid-");
         }
 
-         pca9685->setPWM(currentChannel, 0, currentPWM);
+        pca9685->setPWM(currentChannel, 0, currentPWM);
 
 
-         currentChannel = ESC_CHANNEL;
+        currentChannel = ESC_CHANNEL;
          //   printf("[YDLIDAR INFO]: angle : [%f, %f] i=%d\n", degree, distance, i);
 
-         float distance = shared_info.lidar_info.center_dis;
+        float distance = shared_info.lidar_info.center_dis;
 
         if(distance < STOP_DIST)
         {
-           currentPWM = PWM_NEUTRAL;
-           printf("1. currentPWM1 = %f\n", currentPWM);
+            currentPWM = PWM_NEUTRAL;
+            printf("1. currentPWM1 = %f\n", currentPWM);
         }
         else if(distance >= STOP_DIST && distance < LOW_SPEED_DIST)
         {
-           currentPWM = PWM_MIDDLE;
-           printf("2. currentPWM2 = %f\n", currentPWM);
+            currentPWM = PWM_MIDDLE;
+            printf("2. currentPWM2 = %f\n", currentPWM);
         }
         else if(distance >= LOW_SPEED_DIST)
         {
-           currentPWM = PWM_HIGH;
-           printf("3. currentPWM3 = %f\n", currentPWM);
+            currentPWM = PWM_HIGH;
+            printf("3. currentPWM3 = %f\n", currentPWM);
+        }
+        else
+        {
+            currentPWM = PWM_NEUTRAL;
+            printf("1. currentPWM1 = %f\n", currentPWM);
         }
         pca9685->setPWM(currentChannel, 0, currentPWM);
         //printf("currunetCH: %d\n", currentChannel);
 
   // }
-}
-
-
-/*
-**무슨 함수인지 모르겠는데 빌드할때 에러 떠서 주석처리 했습니다.
-**주어진 코드 봐서는 아마 yolo 결과값을 'stru_sharedInfo' struct에 넣으려고 한거 아닐까 생각중,,,?
-*/
-/*int yolo()
-{
-    pthread_mutex_lock(&g_MutextForSharedInfo);
-    stru_SharedInfo->yolo_info = info;
-    pthread_mutex_unlock(&g_MutextForSharedInfo);
-}*/
-
-
-
+} // int do_Logic()
 
 void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
 {
@@ -278,45 +324,41 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
   //printf("[YDLIDAR INFO]: I heard a laser scan %s[%d]:\n", scan->header.frame_id.c_str(), count);
  // printf("[YDLIDAR INFO]: angle_range : [%f, %f]\n", RAD2DEG(scan->angle_min),RAD2DEG(scan->angle_max));
 
-  float mid_avr = 0;
-  float left_avr = 0;
-  float right_avr = 0;
+    float mid_avr = 0;
+    float left_avr = 0;
+    float right_avr = 0;
 
-/*pthread_mutex_lock(&g_MutextForSharedInfo);
-  stru_SharedInfo.lidar_info = scan_lidar;
-  pthread_mutex_unlock(&g_MutextForSharedInfo);
-
-
-*/
 
   // 각도 설정하는 부분
-  for(int i=0;i<20;i++)
-  {
-      mid_avr += scan->ranges[i];
-  }
+    for(int i=0;i<20;i++)
+    {
+        mid_avr += scan->ranges[i];
+    }
 
-  for(int i=30;i<160;i++)
-  {
-      right_avr += scan->ranges[i];
-  }
+    for(int i=30;i<160;i++)
+    {
+        right_avr += scan->ranges[i];
+    }
 
-  for(int i=1200;i<1330;i++)
-  {
-      left_avr += scan->ranges[i];
-  }
+    for(int i=1200;i<1330;i++)
+    {
+        left_avr += scan->ranges[i];
+    }
 
-  for(int i = 1340;i<1360;i++)
-  {
-      mid_avr += scan->ranges[i];
-  }
+    for(int i = 1340;i<1360;i++)
+    {
+        mid_avr += scan->ranges[i];
+    }
 
-  pthread_mutex_lock(&g_MutextForSharedInfo);
-  stru_sharedInfo.lidar_info.center_dis = mid_avr/40.0;
-  stru_sharedInfo.lidar_info.left_dis = left_avr/130.0;
-  stru_sharedInfo.lidar_info.right_dis = right_avr/130.0;
-  pthread_mutex_unlock(&g_MutextForSharedInfo);
+    pthread_mutex_lock(&g_MutextForSharedInfo);
+    g_sharedInfo_st.lidar_info.center_dis = mid_avr/40.0;
+    g_sharedInfo_st.lidar_info.left_dis = left_avr/130.0;
+    g_sharedInfo_st.lidar_info.right_dis = right_avr/130.0;
+    pthread_mutex_unlock(&g_MutextForSharedInfo);
 
-  do_Logic();
+#ifndef CTL_IN_THREAD_TEST
+    do_Logic();
+#endif // Not CTL_IN_THREAD_TEST
 
   /*
      for (int i = 0; i < count; i+=10)
@@ -386,7 +428,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
     }
   }
   */
-}
+} // void scanCallback
 
 //yolo_Callback
 void dogCallback(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
@@ -398,42 +440,40 @@ void dogCallback(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 */
 
     
-     if(msg->bounding_boxes[0].Class.compare(target) == 0)
-     {
+    if(msg->bounding_boxes[0].Class.compare(target) == 0)
+    {
 
-		cout<<">>>>TARGET (Class):" << msg->bounding_boxes[0].Class <<endl;
-		cout<<"Bounding Boxes (Header):" << msg->header <<endl;
-		cout<<"Bounding Boxes (image_header):" << msg->image_header <<endl;	
-		cout<<"Bounding Boxes (Class):" << msg->bounding_boxes[0].Class <<endl;
-		cout<<"Bounding Boxes (xmax):" << msg->bounding_boxes[0].xmax <<endl;
-		cout<<"Bounding Boxes (xmin):" << msg->bounding_boxes[0].xmin <<endl;
-		cout<<"Bounding Boxes (ymax):" << msg->bounding_boxes[0].ymax <<endl;
-		cout<<"Bounding Boxes (ymin):" << msg->bounding_boxes[0].ymin <<endl;
-	
+        cout<<">>>>TARGET (Class):" << msg->bounding_boxes[0].Class <<endl;
+        cout<<"Bounding Boxes (Header):" << msg->header <<endl;
+        cout<<"Bounding Boxes (image_header):" << msg->image_header <<endl;	
+        cout<<"Bounding Boxes (Class):" << msg->bounding_boxes[0].Class <<endl;
+        cout<<"Bounding Boxes (xmax):" << msg->bounding_boxes[0].xmax <<endl;
+        cout<<"Bounding Boxes (xmin):" << msg->bounding_boxes[0].xmin <<endl;
+        cout<<"Bounding Boxes (ymax):" << msg->bounding_boxes[0].ymax <<endl;
+        cout<<"Bounding Boxes (ymin):" << msg->bounding_boxes[0].ymin <<endl;
 
-		cout << "\033[2J\033[1;1H";		//clear terminal
+
+        cout << "\033[2J\033[1;1H";		//clear terminal
      
- 	pthread_mutex_lock(&g_MutextForSharedInfo);
-
-    stru_sharedInfo.shared_yoloinfo.dog_xmax = msg->bounding_boxes[0].xmax;
-	stru_sharedInfo.shared_yoloinfo.dog_xmin = msg->bounding_boxes[0].xmin;
-	stru_sharedInfo.shared_yoloinfo.dog_ymax = msg->bounding_boxes[0].ymax;
-	stru_sharedInfo.shared_yoloinfo.dog_ymin = msg->bounding_boxes[0].ymin;
-    stru_sharedInfo.shared_yoloinfo.object_cp = (stru_sharedInfo.shared_yoloinfo.dog_xmax + stru_sharedInfo.shared_yoloinfo.dog_xmin)/2.0;
-
-     pthread_mutex_unlock(&g_MutextForSharedInfo);
-	}
+        pthread_mutex_lock(&g_MutextForSharedInfo);
+        g_sharedInfo_st.shared_yoloinfo.dog_xmax = msg->bounding_boxes[0].xmax;
+        g_sharedInfo_st.shared_yoloinfo.dog_xmin = msg->bounding_boxes[0].xmin;
+        g_sharedInfo_st.shared_yoloinfo.dog_ymax = msg->bounding_boxes[0].ymax;
+        g_sharedInfo_st.shared_yoloinfo.dog_ymin = msg->bounding_boxes[0].ymin;
+        g_sharedInfo_st.shared_yoloinfo.object_cp = 
+            (g_sharedInfo_st.shared_yoloinfo.dog_xmax + g_sharedInfo_st.shared_yoloinfo.dog_xmin) / 2.0;
+        pthread_mutex_unlock(&g_MutextForSharedInfo);
+    }
 	else
 	{
-	pthread_mutex_lock(&g_MutextForSharedInfo);
-	stru_sharedInfo.shared_yoloinfo.dog_xmax = -1 ;
-	stru_sharedInfo.shared_yoloinfo.dog_xmin = -1 ;
-	stru_sharedInfo.shared_yoloinfo.dog_ymax = -1 ;
-	stru_sharedInfo.shared_yoloinfo.dog_ymin = -1 ;
-
-	pthread_mutex_unlock(&g_MutextForSharedInfo);
-    }
-}
+    	pthread_mutex_lock(&g_MutextForSharedInfo);
+    	g_sharedInfo_st.shared_yoloinfo.dog_xmax = -1 ;
+    	g_sharedInfo_st.shared_yoloinfo.dog_xmin = -1 ;
+    	g_sharedInfo_st.shared_yoloinfo.dog_ymax = -1 ;
+    	g_sharedInfo_st.shared_yoloinfo.dog_ymin = -1 ;
+    	pthread_mutex_unlock(&g_MutextForSharedInfo);
+    } // end if(msg->bounding_boxes[0].Class.compare(target) == 0)
+} // void dogCallback
 
 void initialset()
 {
@@ -581,9 +621,6 @@ void sigint_handler(int sigint)
    pca9685->setPWM(STEERING_CHANNEL, 0, currentPWM);
    //sleep(1);
 
-   pthread_mutex_destroy(&g_MutextForSharedInfo);
-
-
    if(pca9685)
        delete pca9685;
 
@@ -593,49 +630,55 @@ void sigint_handler(int sigint)
 
 int main(int argc, char **argv)
 {
-  initialset();
-  ros::init(argc, argv, "Subscriber_SigHandler", ros::init_options::NoSigintHandler);     //ctrl+c handler init
-  signal(SIGINT,sigint_handler);
+#ifdef CTL_IN_THREAD_TEST
+    int ret = 0;
+#endif // CTL_IN_THREAD_TEST
 
-  //Mutex init
-  int state =  pthread_mutex_init(&g_MutextForSharedInfo, NULL);
-  if(state)
-  {
-      printf("mutex lilt fail \n");
-      exit(1);
-  }
-/*
-  //
-  // create two thread
-  pthread_create(&t1, NULL, thread_increment, &thread1);
-  pthread_create(&t2, NULL, thread_increment, &thread2);
+    initialset();
+    ros::init(argc, argv, "Subscriber_SigHandler", ros::init_options::NoSigintHandler);     //ctrl+c handler init
+    signal(SIGINT,sigint_handler);
 
-  // thread 생성 완료될 때까지 지연
-  pthread_join(t1, &thread_result);
-  pthread_join(t2, &thread_result);
-*/
-  //destroy Mutex
-  //pthread_mutex_destroy(&g_MutextForSharedInfo);
+    //Mutex init
+    int state =  pthread_mutex_init(&g_MutextForSharedInfo, NULL);
+    if(state)
+    {
+        printf("mutex lilt fail \n");
+        exit(1);
+    }
 
-  ros::init(argc, argv, "ydlidar_client");
-  ros::NodeHandle n;
-  ros::Subscriber sub = n.subscribe<sensor_msgs::LaserScan>("/scan", 1000, scanCallback);
+#ifdef CTL_IN_THREAD_TEST
+    ret = pthread_create(&g_tid, NULL, &ros_car_handler, (void *)NULL);
+    if (ret != 0)
+    {
+        pthread_mutex_destroy(&g_MutextForSharedInfo);
+        exit(1);
+    }
+#endif // CTL_IN_THREAD_TEST
+
+    ros::init(argc, argv, "ydlidar_client");
+    ros::NodeHandle n;
+    ros::Subscriber sub = n.subscribe<sensor_msgs::LaserScan>("/scan", 1000, scanCallback);
 
 
-  //yolo_subscribe
-  ros::init(argc, argv, "dog_tracking");
-  ros::NodeHandle nh;
-// ros::Subscriber sub = n.subscribe("keys", 1, Callback);
-  ros::Subscriber dog_tracking_sub = nh.subscribe("/darknet_ros/bounding_boxes", 1, dogCallback);
+    //yolo_subscribe
+    ros::init(argc, argv, "dog_tracking");
+    ros::NodeHandle nh;
+    // ros::Subscriber sub = n.subscribe("keys", 1, Callback);
+    ros::Subscriber dog_tracking_sub = nh.subscribe("/darknet_ros/bounding_boxes", 1, dogCallback);
   
+    ros::spin();
 
+#ifdef CTL_IN_THREAD_TEST
+    s_loop = 1;
 
+    if (g_tid)
+    {
+        pthread_join(g_tid, NULL); 
+    }
+#endif // CTL_IN_THREAD_TEST
 
-  ros::spin();
+    pthread_mutex_destroy(&g_MutextForSharedInfo);
 
-
-
-
-  return 0;
+    return 0;
 }
 

@@ -130,7 +130,15 @@ void DogRegister::OnBnClickedOk()
 		int nResult = _access(path_name, 0);  //디렉토리 있으면 0, 없으면 -1반환
 		if (nResult) //없으면 dir 생성
 		{
-			MessageBox(_T("we make folder in %s",path_name), _T("Save Complete"), MB_OK);
+            ///< Note : MessageBox의 첫번째 패러미터는 완성된 문자열이 들어가며,
+            ///< 이전에 설정한 것과 같이 printf와 같은 형식이 들어갈 수 없습니다.
+            ///< 항상 절대 절대 compile warning을 주의해야 합니다.
+            ///< 실무에서 compiling 도중 error가 발생한 것은 오히려 명확하기 때문에 문제파악이 쉽게 되는데 반해,
+            ///< warning을 무시하게 되면, 나중에 알수 없는 에러 등으로 문제 원인 파악이 힘든 경우가 아주 많습니다.
+            ///< 따라서 Compile 혹은 Link 도중 warning이 발생하면 그 원인을 파악하고 되도록이면 warning이 하나도 안나오는 상태가
+            ///< 가장 이상적입니다.
+            CString message = "we make folder in " + path_name;
+			MessageBox(message, _T("Save Complete"), MB_OK);
 			CreateDirectory((LPCTSTR)path_name, NULL);
 		}
 
