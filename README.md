@@ -1,146 +1,91 @@
 # Dog Biometrics Project
 ## test update
 
+-2019.10.24±îÁöÀÇ ¾÷µ¥ÀÌÆ® »óÈ²
 
--2019.10.24ê¹Œì§€ì˜ ì—…ë°ì´íŠ¸ ìƒí™©
-=======
-## test update
+1. DogRegister::Checkarg() Ãß°¡
+	ÀÌ¸§,Á¾,ÁÖ¼Ò,³ªÀÌ ¾øÀ¸¸é ¿¡·¯
+	³ªÀÌ ¹üÀ§ ¹þ¾î³ª¸é ¿¡·¯(¼ýÀÚ¸»°í ´Ù¸¥°Å ÃÄµµ ¿¡·¯)
 
--2019.10.24ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È²
-
-1. DogRegister::Checkarg() ï¿½ß°ï¿½
-	ï¿½Ì¸ï¿½,ï¿½,ï¿½Ö¼ï¿½,ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î³ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½Äµï¿½ ï¿½ï¿½ï¿½ï¿½)
-
-2. CameraMgr.cpp ï¿½ï¿½ ï¿½Úµï¿½ï¿½ß°ï¿½
-	CameraMgr::OnBnClickedOk() ï¿½ï¿½ CameraMgr::OnBnClickedCancel()ï¿½ï¿½ ï¿½Úµï¿½ï¿½ß°ï¿½
+2. CameraMgr.cpp ¿¡ ÄÚµåÃß°¡
+	CameraMgr::OnBnClickedOk() ¿Í CameraMgr::OnBnClickedCancel()¿¡ ÄÚµåÃß°¡
 	
 
-	ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Úµï¿½:
+	Ãß°¡ÇÑ ÄÚµå:
 
 		if (capture)
 		{
 			delete capture;
 		}
-	ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:
-		ï¿½ï¿½ï¿½Ï¸ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½È²ï¿½ï¿½ï¿½ -> ï¿½È²ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MFCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	Ãß°¡ÇÑ ÀÌÀ¯:
+		¾ÈÇÏ¸é Ä«¸Þ¶ó°¡ ¾È²¨Áü -> ¾È²¨Áö¸é »çÁøÀ» ´Ù½Ã µî·ÏÇÏ·Á°í ´©¸£¸é MFC°¡ ²¨Áü
 
-3-1. stdafx.hï¿½ï¿½ #defineï¿½ï¿½ï¿½ SAVE_PATHï¿½ï¿½ IMAGE_PATH ï¿½ß°ï¿½
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½ï¿½ C:\DogIdentificationdnï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ C:\DogIdentification\Image ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½
-	IMAGE_PATHï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ "Image"ï¿½ï¿½ ï¿½ß´Âµï¿½ ï¿½×³ï¿½ " C:\DogIdentification\Image"ï¿½ï¿½ ï¿½Ù²Ü±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½(3-3ï¿½ï¿½ï¿½)
-
-
-3-2. DogIdentificationDlg.cppï¿½ï¿½ SAVE_PATHï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½
-	ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
-
-3-3. DogResister.cppï¿½ï¿½ Image ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CImageï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½(4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
-	ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò¶ï¿½  SAVE_PATHï¿½ï¿½ IMAGE_PATH ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½×³ï¿½ IMAGE_PATH ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ IMAGE_PATH ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ù²Ü±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½,
-		ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Ì¸ï¿½_ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-		ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¾î³².
-
-4. CameraMgr.hï¿½ï¿½ CStatic* m_picDog ï¿½ß°ï¿½ï¿½Ï°ï¿½ DogResister.cpp ï¿½ï¿½ï¿½ï¿½ open cameraï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ m_bmpBitmapï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å´ (ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½)
-	DogRegister::OnBnClickedBtnOpencamera() ï¿½ï¿½ï¿½ï¿½ pCameraInst->save_img = &m_bmpBitmap; ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	CameraMgr::OnBnClickedOk() ï¿½ÎºÐ¿ï¿½ï¿½ï¿½ save_imgï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-
-5. CameraMgr::OnBnClickedOk()ï¿½ï¿½ï¿½ï¿½ StretchDIBitsï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç±æ·¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Êºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½Úµå°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, imgWidth, imgHeight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY); ï¿½ï¿½ï¿½ï¿½
-	imgWidth, imgHeight ï¿½ÎºÐ¸ï¿½ ï¿½Ù²ï¿½
+3-1. stdafx.h¿¡ #defineÀ¸·Î SAVE_PATH¶û IMAGE_PATH Ãß°¡
+	»ç¿ëÀÚÀÇ ÄÄÇ»ÅÍ C:\DogIdentificationdn¿¡ Æú´õ¸¦ ¸¸µé°í ÀÌ¹ÌÁö´Â C:\DogIdentification\Image ¿¡ ÀúÀåÇÏ·Á°í
+	IMAGE_PATH¸¦ ÇöÀç´Â "Image"·Î Çß´Âµ¥ ±×³É " C:\DogIdentification\Image"·Î ¹Ù²Ü±î °í·ÁÁß(3-3ÂüÁ¶)
 
 
+3-2. DogIdentificationDlg.cpp¿¡ SAVE_PATH¿¡ Æú´õ°¡ ¾øÀ¸¸é ¸¸µå´Â ÄÚµå ³ÖÀ½
+	¾îÇÃÀ» ½ÇÇàÇÏ¸é, Á¸Àç À¯¹«¸¦ µûÁø ÈÄ¿¡ ¾øÀ¸¸é Æú´õ¸¦ ¸¸µé ¼ö ÀÖÀ½
 
-=======
-
-# [MFC]
-
-1. DogRegister::Checkarg() ì¶”ê°€
-	ì´ë¦„,ì¢…,ì£¼ì†Œ,ë‚˜ì´ ì—†ìœ¼ë©´ ì—ëŸ¬
-	ë‚˜ì´ ë²”ìœ„ ë²—ì–´ë‚˜ë©´ ì—ëŸ¬(ìˆ«ìžë§ê³  ë‹¤ë¥¸ê±° ì³ë„ ì—ëŸ¬)
-
-2. CameraMgr.cpp ì— ì½”ë“œì¶”ê°€
-	CameraMgr::OnBnClickedOk() ì™€ CameraMgr::OnBnClickedCancel()ì— ì½”ë“œì¶”ê°€
-	
-
-	ì¶”ê°€í•œ ì½”ë“œ:
-
-		if (capture)
-		{
-			delete capture;
-		}
-	ì¶”ê°€í•œ ì´ìœ :
-		ì•ˆí•˜ë©´ ì¹´ë©”ë¼ê°€ ì•ˆêº¼ì§ -> ì•ˆêº¼ì§€ë©´ ì‚¬ì§„ì„ ë‹¤ì‹œ ë“±ë¡í•˜ë ¤ê³  ëˆ„ë¥´ë©´ MFCê°€ êº¼ì§
-
-3-1. stdafx.hì— #defineìœ¼ë¡œ SAVE_PATHëž‘ IMAGE_PATH ì¶”ê°€
-	ì‚¬ìš©ìžì˜ ì»´í“¨í„° C:\DogIdentificationdnì— í´ë”ë¥¼ ë§Œë“¤ê³  ì´ë¯¸ì§€ëŠ” C:\DogIdentification\Image ì— ì €ìž¥í•˜ë ¤ê³ 
-	IMAGE_PATHë¥¼ í˜„ìž¬ëŠ” "Image"ë¡œ í–ˆëŠ”ë° ê·¸ëƒ¥ " C:\DogIdentification\Image"ë¡œ ë°”ê¿€ê¹Œ ê³ ë ¤ì¤‘(3-3ì°¸ì¡°)
+3-3. DogResister.cpp¿¡ Image Æú´õ ¾øÀ¸¸é ¸¸µé°í CImageÀÌ¿ëÇØ¼­ »çÁø Á¤º¸ ÀúÀåÇÏ´Â ÄÚµå ³ÖÀ½(4¶û ¿¬µ¿)
+	ÀÌ¶§ °æ·Î ÁöÁ¤ ÇÒ¶§  SAVE_PATH¿Í IMAGE_PATH ¸¦ ÇÕÃÄ¼­ ÁöÁ¤ÇÏ´Âµ¥ ±×³É IMAGE_PATH ÇÏ³ª·Î ¾µ ¼ö ÀÖ°Ô IMAGE_PATH ÀÚÃ¼¸¦ ¹Ù²Ü±î °í·ÁÁß
+	»çÁø ÀúÀåÇÒ¶§ ÀúÀå ÀÌ¸§Àº °­¾ÆÁö ÀÌ¸§,
+		ÀÌ¶§ °°Àº ÀÌ¸§ÀÇ °­¾ÆÁö°¡ ÀÌ¹Ì ÀÖ´Ù¸é ÀÌ¸§_¼ýÀÚ, ·Î ÀúÀå
+		¼ýÀÚ´Â °°ÀºÀÌ¸§ÀÇ °­¾ÆÁö°¡ ÇÑ¸¶¸® ÀÖÀ»¶§¸¶´Ù ´Ã¾î³².
 
 
-3-2. DogIdentificationDlg.cppì— SAVE_PATHì— í´ë”ê°€ ì—†ìœ¼ë©´ ë§Œë“œëŠ” ì½”ë“œ ë„£ìŒ
-	ì–´í”Œì„ ì‹¤í–‰í•˜ë©´, ì¡´ìž¬ ìœ ë¬´ë¥¼ ë”°ì§„ í›„ì— ì—†ìœ¼ë©´ í´ë”ë¥¼ ë§Œë“¤ ìˆ˜ ìžˆìŒ
+4. CameraMgr.h¿¡ CStatic* m_picDog Ãß°¡ÇÏ°í DogResister.cpp ¿¡¼­ open camera¹öÆ° ´©¸£¸é m_bmpBitmapÀÌ¶û ¿¬µ¿½ÃÅ´ (ÀÌ¹ÌÁö¸¦ ÀúÀåÇÏ±â À§ÇØ)
+	DogRegister::OnBnClickedBtnOpencamera() ¿¡¼­ pCameraInst->save_img = &m_bmpBitmap; ·Î ¿¬µ¿
+	CameraMgr::OnBnClickedOk() ºÎºÐ¿¡¼­ save_img¸¦ ÅëÇØ ÀúÀå
 
-3-3. DogResister.cppì— Image í´ë” ì—†ìœ¼ë©´ ë§Œë“¤ê³  CImageì´ìš©í•´ì„œ ì‚¬ì§„ ì •ë³´ ì €ìž¥í•˜ëŠ” ì½”ë“œ ë„£ìŒ(4ëž‘ ì—°ë™)
-	ì´ë•Œ ê²½ë¡œ ì§€ì • í• ë•Œ  SAVE_PATHì™€ IMAGE_PATH ë¥¼ í•©ì³ì„œ ì§€ì •í•˜ëŠ”ë° ê·¸ëƒ¥ IMAGE_PATH í•˜ë‚˜ë¡œ ì“¸ ìˆ˜ ìžˆê²Œ IMAGE_PATH ìžì²´ë¥¼ ë°”ê¿€ê¹Œ ê³ ë ¤ì¤‘
-	ì‚¬ì§„ ì €ìž¥í• ë•Œ ì €ìž¥ ì´ë¦„ì€ ê°•ì•„ì§€ ì´ë¦„,
-		ì´ë•Œ ê°™ì€ ì´ë¦„ì˜ ê°•ì•„ì§€ê°€ ì´ë¯¸ ìžˆë‹¤ë©´ ì´ë¦„_ìˆ«ìž, ë¡œ ì €ìž¥
-		ìˆ«ìžëŠ” ê°™ì€ì´ë¦„ì˜ ê°•ì•„ì§€ê°€ í•œë§ˆë¦¬ ìžˆì„ë•Œë§ˆë‹¤ ëŠ˜ì–´ë‚¨.
-
-
-4. CameraMgr.hì— CStatic* m_picDog ì¶”ê°€í•˜ê³  DogResister.cpp ì—ì„œ open cameraë²„íŠ¼ ëˆ„ë¥´ë©´ m_bmpBitmapì´ëž‘ ì—°ë™ì‹œí‚´ (ì´ë¯¸ì§€ë¥¼ ì €ìž¥í•˜ê¸° ìœ„í•´)
-	DogRegister::OnBnClickedBtnOpencamera() ì—ì„œ pCameraInst->save_img = &m_bmpBitmap; ë¡œ ì—°ë™
-	CameraMgr::OnBnClickedOk() ë¶€ë¶„ì—ì„œ save_imgë¥¼ í†µí•´ ì €ìž¥
-
-5. CameraMgr::OnBnClickedOk()ì—ì„œ StretchDIBitsí•¨ìˆ˜ ìˆ˜ì •
-	ì‚¬ì§„ì´ í‹€ì–´ì ¸ì„œ ì €ìž¥ ë˜ê¸¸ëž˜ ë†’ì´ ë„ˆë¹„ ìˆ˜ì •í•¨, ì›ëž˜ ì½”ë“œê°€ ê¸°ì–µì´ ë‚˜ì§€ ì•Šì§€ë§Œ
-	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, imgWidth, imgHeight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY); ì—ì„œ
-	imgWidth, imgHeight ë¶€ë¶„ë§Œ ë°”ê¿ˆ
-
+5. CameraMgr::OnBnClickedOk()¿¡¼­ StretchDIBitsÇÔ¼ö ¼öÁ¤
+	»çÁøÀÌ Æ²¾îÁ®¼­ ÀúÀå µÇ±æ·¡ ³ôÀÌ ³Êºñ ¼öÁ¤ÇÔ, ¿ø·¡ ÄÚµå°¡ ±â¾ïÀÌ ³ªÁö ¾ÊÁö¸¸
+	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, imgWidth, imgHeight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY); ¿¡¼­
+	imgWidth, imgHeight ºÎºÐ¸¸ ¹Ù²Þ
 
 
 ## [MFC]
-## ë§ˆì¹œ ì¼
-- UserPassword(ì™„ë£Œ)
+## ¸¶Ä£ ÀÏ
+- UserPassword(¿Ï·á)
 
-	- ì €ìž¥ëœ íŒ¨ìŠ¤ì›Œë“œê°€ ì—†ì„ ë•Œ íŒ¨ìŠ¤ì›Œë“œ ë“±ë¡ ì°½ìœ¼ë¡œ ë„˜ì–´ê°€ì„œ íŒ¨ìŠ¤ì›Œë“œ ë“±ë¡
-- Login(ì™„ë£Œ)
-	- ì €ìž¥ëœ íŒ¨ìŠ¤ì›Œë“œê°€ ìžˆì„ ë•Œ ë¡œê·¸ì¸ ì°½ìœ¼ë¡œ ë„˜ì–´ê°€ì„œ íŒ¨ìŠ¤ì›Œë“œ ë¹„êµí›„ ë¡œê·¸ì¸
-- EditPassword(ì™„ë£Œ)
+	- ÀúÀåµÈ ÆÐ½º¿öµå°¡ ¾øÀ» ¶§ ÆÐ½º¿öµå µî·Ï Ã¢À¸·Î ³Ñ¾î°¡¼­ ÆÐ½º¿öµå µî·Ï
+- Login(¿Ï·á)
 
-	- íŒ¨ìŠ¤ì›Œë“œ ì²´í¬
-	- íŒ¨ìŠ¤ì›Œë“œ ë³€ê²½ í›„, ë³€ê²½ íŒ¨ìŠ¤ì›Œë“œ ì €ìž¥
+	- ÀúÀåµÈ ÆÐ½º¿öµå°¡ ÀÖÀ» ¶§ ·Î±×ÀÎ Ã¢À¸·Î ³Ñ¾î°¡¼­ ÆÐ½º¿öµå ºñ±³ÈÄ ·Î±×ÀÎ
+- EditPassword(¿Ï·á)
+
+	- ÆÐ½º¿öµå Ã¼Å©
+	- ÆÐ½º¿öµå º¯°æ ÈÄ, º¯°æ ÆÐ½º¿öµå ÀúÀå
+~~~ 
+ÆÐ½º¿öµå ÆÄÀÏÀÇ ÀúÀå°æ·Î´Â my_define.h ÆÄÀÏ¿¡ ¸í½ÃµÇ¾î ÀÖ´Ù. 
 ~~~
- íŒ¨ìŠ¤ì›Œë“œ íŒŒì¼ì˜ ì €ìž¥ê²½ë¡œëŠ” my_define.h íŒŒì¼ì— ëª…ì‹œë˜ì–´ ìžˆë‹¤. 
- ~~~
-- CamerMgr(ì™„ë£Œ)
-	- ì‚¬ì§„ì°ê¸°
-- DogRegister(ë¶€ë¶„ì™„ë£Œ)
+- CamerMgr(¿Ï·á)
 
-	- localì—ì„œ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
-	- webcamì—ì„œ ì‚¬ì§„ ì°ì–´ ë„ìš°ê¸°(CameraMgrì—ì„œ ì°ì€ ì‚¬ì§„ ë°›ì•„ì„œ ë„ì›€)
-    - dbì— ê°•ì•„ì§€ ì •ë³´ ë“±ë¡(ì´ë¯¸ì§€ ì œì™¸í•œ ëª¨ë“  ì •ë³´)
+	- »çÁøÂï±â
+- DogRegister(ºÎºÐ¿Ï·á)
 
-- SearchDogInfo(ë¶€ë¶„ì™„ë£Œ)
+	- local¿¡¼­ ÀÌ¹ÌÁö ºÒ·¯¿À±â
+	- webcam¿¡¼­ »çÁø Âï¾î ¶ç¿ì±â(CameraMgr¿¡¼­ ÂïÀº »çÁø ¹Þ¾Æ¼­ ¶ç¿ò)
+	- db¿¡ °­¾ÆÁö Á¤º¸ µî·Ï(ÀÌ¹ÌÁö Á¦¿ÜÇÑ ¸ðµç Á¤º¸)
 
-	- localì—ì„œ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
-	- webcamì—ì„œ ì‚¬ì§„ ì°ì–´ ë„ìš°ê¸°(CameraMgrì—ì„œ ì°ì€ ì‚¬ì§„ ë°›ì•„ì„œ ë„ì›€)
-	- ê°•ì•„ì§€ì •ë³´ Search( í˜„ìž¬ëŠ” ì´ë¯¸ì§€ê²€ìƒ‰ì´ ì•ˆë˜ë¯€ë¡œ dbì˜ ì œì¼ ë§ˆì§€ë§‰ì— ë“±ë¡ë˜ì–´ìžˆëŠ” ê°•ì•„ì§€ ì •ë³´ ë¶ˆëŸ¬ì˜´)
-	- ê°•ì•„ì§€ì •ë³´ ë³€ê²½ & dbì— ì €ìž¥
-	- ê°•ì•„ì§€ì •ë³´ ì‚­ì œ
-
-## í•´ì•¼í•  ì¼
+- SearchDogInfo(ºÎºÐ¿Ï·á)
+	- local¿¡¼­ ÀÌ¹ÌÁö ºÒ·¯¿À±â
+	- webcam¿¡¼­ »çÁø Âï¾î ¶ç¿ì±â(CameraMgr¿¡¼­ ÂïÀº »çÁø ¹Þ¾Æ¼­ ¶ç¿ò)
+	- °­¾ÆÁöÁ¤º¸ Search( ÇöÀç´Â ÀÌ¹ÌÁö°Ë»öÀÌ ¾ÈµÇ¹Ç·Î dbÀÇ Á¦ÀÏ ¸¶Áö¸·¿¡ µî·ÏµÇ¾îÀÖ´Â °­¾ÆÁö Á¤º¸ ºÒ·¯¿È)
+	- °­¾ÆÁöÁ¤º¸ º¯°æ & db¿¡ ÀúÀå
+	- °­¾ÆÁöÁ¤º¸ »èÁ¦
+## ÇØ¾ßÇÒ ÀÏ
 - DogRegister
 
-	- ì´ë¯¸ì§€ ë¶„ì„ & ë¶„ì„ì •ë³´ ë°›ì•„ì˜¤ê¸°
-	- ë¶„ì„í•œ ì´ë¯¸ì§€ê°€ ê¸°ì¡´ì— ì¡´ìž¬í•˜ëŠ” ê°•ì•„ì§€ ì •ë³´ì¸ì§€ Search
-	- ì´ë¯¸ì§€ ë¶„ì„ì •ë³´ ì €ìž¥
+	- ÀÌ¹ÌÁö ºÐ¼® & ºÐ¼®Á¤º¸ ¹Þ¾Æ¿À±â
+	- ºÐ¼®ÇÑ ÀÌ¹ÌÁö°¡ ±âÁ¸¿¡ Á¸ÀçÇÏ´Â °­¾ÆÁö Á¤º¸ÀÎÁö Search
+	- ÀÌ¹ÌÁö ºÐ¼®Á¤º¸ ÀúÀå
 - SearchDogInfo
-  - ì´ë¯¸ì§€ ê²€ìƒ‰í•´ì„œ ê°•ì•„ì§€ ì •ë³´ ë°›ì•„ì˜¤ê¸°
-- ì°½ë‹«ê¸° ë²„íŠ¼ ë¹„í™œì„±í™”
 
-- memory leak í•´ê²°
+	- ÀÌ¹ÌÁö °Ë»öÇØ¼­ °­¾ÆÁö Á¤º¸ ¹Þ¾Æ¿À±â
+- Ã¢´Ý±â ¹öÆ° ºñÈ°¼ºÈ­
+
+- memory leak ÇØ°á
 
 [RaceCar]
-
-
-# [RaceCar]
-
