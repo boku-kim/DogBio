@@ -1,7 +1,7 @@
 # Dog Biometrics Project
 ## test update
 
--2019.10.24까지의 업데이트 상황
+- 2019.10.24까지의 업데이트 상황
 
 1. DogRegister::Checkarg() 추가
 	이름,종,주소,나이 없으면 에러
@@ -34,7 +34,6 @@
 		이때 같은 이름의 강아지가 이미 있다면 이름_숫자, 로 저장
 		숫자는 같은이름의 강아지가 한마리 있을때마다 늘어남.
 
-
 4. CameraMgr.h에 CStatic* m_picDog 추가하고 DogResister.cpp 에서 open camera버튼 누르면 m_bmpBitmap이랑 연동시킴 (이미지를 저장하기 위해)
 	DogRegister::OnBnClickedBtnOpencamera() 에서 pCameraInst->save_img = &m_bmpBitmap; 로 연동
 	CameraMgr::OnBnClickedOk() 부분에서 save_img를 통해 저장
@@ -45,47 +44,27 @@
 	imgWidth, imgHeight 부분만 바꿈
 
 
-## [MFC]
-## 마친 일
-- UserPassword(완료)
 
-	- 저장된 패스워드가 없을 때 패스워드 등록 창으로 넘어가서 패스워드 등록
-- Login(완료)
 
-	- 저장된 패스워드가 있을 때 로그인 창으로 넘어가서 패스워드 비교후 로그인
-- EditPassword(완료)
 
-	- 패스워드 체크
-	- 패스워드 변경 후, 변경 패스워드 저장
-~~~ 
-패스워드 파일의 저장경로는 my_define.h 파일에 명시되어 있다. 
-~~~
-- CamerMgr(완료)
 
-	- 사진찍기
-- DogRegister(부분완료)
+- 2019.10.24 오후까지의 업데이트 상황
 
-	- local에서 이미지 불러오기
-	- webcam에서 사진 찍어 띄우기(CameraMgr에서 찍은 사진 받아서 띄움)
-	- db에 강아지 정보 등록(이미지 제외한 모든 정보)
+1. CateraMgr.cpp 의 void CameraMgr::OnBnClickedOk()에서 잘못된 DC가 Release 되고있기에 수정함.
+	::ReleaseDC(m_camerapic->m_hWnd, dc);  에서 ::ReleaseDC(m_picDog->m_hWnd, dc); 로 수정
 
-- SearchDogInfo(부분완료)
-	- local에서 이미지 불러오기
-	- webcam에서 사진 찍어 띄우기(CameraMgr에서 찍은 사진 받아서 띄움)
-	- 강아지정보 Search( 현재는 이미지검색이 안되므로 db의 제일 마지막에 등록되어있는 강아지 정보 불러옴)
-	- 강아지정보 변경 & db에 저장
-	- 강아지정보 삭제
-## 해야할 일
-- DogRegister
+2. DbAccess에 Image_path에 관련된 부분들 추가
 
-	- 이미지 분석 & 분석정보 받아오기
-	- 분석한 이미지가 기존에 존재하는 강아지 정보인지 Search
-	- 이미지 분석정보 저장
-- SearchDogInfo
+3. SearchDogInfo에 search/edit/delete 기능 추가
+	
+	search -> 아직도 일단은 제일 마지막에 저장된 정보를 찾는다.
+		   -> 이미지 없으면 이미지가 없다는 알림창이 뜬다.
 
-	- 이미지 검색해서 강아지 정보 받아오기
-- 창닫기 버튼 비활성화
+	edit   -> 수정할 때에는 일단 저장되어있던 사진 파일을 지우고, 현재 지정된 이름으로 다시 저장한다. (방식은 dogRegister와 동일)
+		   -> DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr, file_name); 에서 마지막이 file_name인 이유는 새로운 경로 저장하려고.
+		   -> edit 할때 이상한 값이 들어오는걸 막기 위해 DogRegister에 있던 Checkarg()함수 복붙함 -> 근데 '같은 문자 넣는것을 막아야 한다,,,, db에 넣을 때 에러남...
 
-- memory leak 해결
+	delete -> 사진 파일이 있으면 사진을 지우고, db_table안의 정보를 다 지운다.
+		   -> 지운 후에는 화면 초기화 (Invalidate(true); 사용)
 
-[RaceCar]
+

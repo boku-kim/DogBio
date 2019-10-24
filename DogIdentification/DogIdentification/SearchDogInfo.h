@@ -19,7 +19,6 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
-
 	DECLARE_MESSAGE_MAP()
 private:
 	CEdit m_edit_dogname;
@@ -27,7 +26,8 @@ private:
 	CEdit m_editspecies;
 	CEdit m_editaddr;
 	int m_radiogender;
-
+	int iwidth, iheight;
+	int width, height;
 
 	bool e_flag;
 	HICON m_hIcon;
@@ -37,6 +37,7 @@ public:
 	static CString m_dogSpecies;
 	static CString m_dogAddr;
 	static CString m_gender;
+	static CString m_dogimg;
 
 	
 	CStatic m_PIC;
@@ -56,4 +57,5 @@ public:
 	afx_msg void OnBnClickedBtn1();
 	afx_msg void OnBnClickedBtn2();
 	virtual BOOL OnInitDialog();
+	int Checkarg();
 };

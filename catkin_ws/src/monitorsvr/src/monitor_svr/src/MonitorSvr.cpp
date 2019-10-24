@@ -27,7 +27,22 @@ static DWORD s_internal_loop = 1;
 * @brief : check whether reading is enabled.
 ****************************************************************************************************
 */
-
+//TODO ClearAll
+void ClearAll(){
+     DtSendDataWrap_t* pItem = NULL;
+    while (1)
+    {
+        pthread_mutex_lock(&m_mutex_queue);
+        GetItem(&pItem);
+        pthread_mutex_unlock(&m_mutex_queue);
+        if (pItem == NULL)
+        {
+            break;
+        }
+        FreeSendDataWrap(pItem);
+    }
+    m_queue.clear();
+}
 //TODO redady_for_reading
 DT_STATUS ready_for_reading(int socket_fd, DWORD msec)
 {
@@ -590,7 +605,7 @@ void* dt_server_handler(void* data)
             DT_CHECK_POINT("invalid client socket descriptor[%d].", pParent->m_client_fd);
             continue;
         }
-
+        ClearAll();
         communicate_to_client(pParent->m_client_fd);
         if (pParent->m_client_fd > 0)
         {
@@ -694,7 +709,7 @@ DT_STATUS MonitorServer::StartServer()
     }
         
     m_server_addr.sin_family = AF_INET;
-    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY : ì„œë²„ì˜ IP ì£¼ì†Œë¥¼ ìë™ìœ¼ë¡œ ì°¾ì•„ì„œ ëŒ€ì…
+    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY : ?„œë²„ì˜ IP ì£¼ì†Œë¥? ??™?œ¼ë¡? ì°¾ì•„?„œ ????…
     m_server_addr.sin_port = htons(DT_MONITOR_SVR_SOCKET_PORT);
 
     /*

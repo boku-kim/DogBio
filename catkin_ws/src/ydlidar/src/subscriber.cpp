@@ -64,12 +64,14 @@ char thread2[]="value";
 #define PWM_FULL_REVERSE 204 // 1ms/20ms * 4096
 #define PWM_NEUTRAL 307      // 1.5ms/20ms * 4096
 #define PWM_FULL_FORWARD 409 // 2ms/20ms * 4096
-#define PWM_MIDDLE 312       // Normal moving velocity
-#define PWM_HIGH 320         // Fast moving velocity
+#define PWM_MIDDLE 315       // Normal moving velocity
+#define PWM_HIGH 324        // Fast moving velocity
 #define PWM_LEFT 227         // Left moving
 #define PWM_RIGHT 387        // Right moving
 #define STEER_MIN 90         // Steering min. Angle
 #define STEER_MAX 165        // Steering max. Angle
+#define STOP_DIST 0.6        // Stop distance
+#define LOW_SPEED_DIST 1.2   // Low speed distance
 
 
 //#define RAD2DEG(x) ((x)*180./M_PI)   //각도 쓰기 싫어서 지움.
@@ -153,7 +155,8 @@ int do_Logic()
     /*
     ** 강아지가 잡히면 우선권 yolo가 가짐
     */
-    if (shared_info.shared_yoloinfo.dog_xmax >= 0)
+/*
+    if(msg->bounding_boxes[0].Class.compare(target) == 0)
     {
 
             float xmax = shared_info.shared_yoloinfo.dog_xmax;
@@ -195,13 +198,14 @@ int do_Logic()
 		}		
 
     }
+    */
     //강아지가 안잡힐때 LIDAR
 
-   else{
+  // else{
 
         currentChannel = STEERING_CHANNEL;
 
-        if (shared_info.lidar_info.left_dis < 0.5)
+        if (shared_info.lidar_info.left_dis < 0.7)
         {
 
             currentPWM = PWM_LEFT;
@@ -209,7 +213,7 @@ int do_Logic()
             printf("Left-");
 
          }
-        else if (shared_info.lidar_info.right_dis < 0.5)
+        else if (shared_info.lidar_info.right_dis < 0.7)
         {
 
             currentPWM = PWM_RIGHT;
@@ -232,17 +236,17 @@ int do_Logic()
 
          float distance = shared_info.lidar_info.center_dis;
 
-        if(distance < 0.3)
+        if(distance < STOP_DIST)
         {
            currentPWM = PWM_NEUTRAL;
            printf("1. currentPWM1 = %f\n", currentPWM);
         }
-        else if(distance >= 0.3 && distance < 0.8)
+        else if(distance >= STOP_DIST && distance < LOW_SPEED_DIST)
         {
            currentPWM = PWM_MIDDLE;
            printf("2. currentPWM2 = %f\n", currentPWM);
         }
-        else if(distance >= 0.8)
+        else if(distance >= LOW_SPEED_DIST)
         {
            currentPWM = PWM_HIGH;
            printf("3. currentPWM3 = %f\n", currentPWM);
@@ -250,7 +254,7 @@ int do_Logic()
         pca9685->setPWM(currentChannel, 0, currentPWM);
         //printf("currunetCH: %d\n", currentChannel);
 
-   }
+  // }
 }
 
 
@@ -285,7 +289,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
 
 */
 
-
+  // 각도 설정하는 부분
   for(int i=0;i<20;i++)
   {
       mid_avr += scan->ranges[i];

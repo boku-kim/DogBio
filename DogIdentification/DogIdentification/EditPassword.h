@@ -25,16 +25,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
-
-private:
-	CEdit m_newpw1;
-	CEdit m_newpw2;
-	CEdit m_editPassword;
-	CString m_inputPassword;
-	bool ischecked; //패스워드가 확인되었는지여부체크
 public:
 	afx_msg void OnBnClickedBtnCheck();
 	afx_msg void OnBnClickedBtnChange();
 	afx_msg void OnBnClickedBtnCancel();
-	
+	CEdit m_newpw1;
+	CEdit m_newpw2;
 };

@@ -7,6 +7,7 @@ typedef struct _Dogdata {
 	CString gender;
 	CString species;
 	CString address;
+	CString dogimg;
 }Dogdata;
 
 class DbAccess
@@ -15,7 +16,7 @@ public:
 	void DbTest();
 	static void DbInsert();
 	static void DbSearch();
-	static void DbSetting(CString, CString, CString, CString, CString);
+	static void DbSetting(CString, CString, CString, CString, CString, CString);
 	static void DbOutting();
 	static void DbDelete();
 	static void DbUpdate();

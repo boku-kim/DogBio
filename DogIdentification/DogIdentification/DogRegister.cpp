@@ -77,7 +77,8 @@ void DogRegister::OnBnClickedBtnLoadimg()
 
         int width = 0;
         int height = 0;
-		m_bmpBitmap.Destroy();
+
+		
 		m_bmpBitmap.Load(img_path); // error check
 		width = m_bmpBitmap.GetWidth();
 		height = m_bmpBitmap.GetHeight();
@@ -100,7 +101,6 @@ void DogRegister::OnBnClickedBtnOpencamera()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CameraMgr* pCameraInst = CameraMgr::GetInstance();
 	pCameraInst->m_picDog = &(this->m_picDog);
-	//m_bmpBitmap.Destroy();
 	pCameraInst->save_img = &m_bmpBitmap;
 
 	pCameraInst->DoModal();
@@ -158,7 +158,8 @@ void DogRegister::OnBnClickedOk()
 		}
 		m_bmpBitmap.Save(file_name, Gdiplus::ImageFormatJPEG);
 
-		DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr);
+
+		DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr, file_name);
 		DbAccess::DbInsert();
 		MessageBox(_T("저장되었습니다."), _T("Save Complete"), MB_OK);
 		CDialogEx::OnOK();
@@ -215,3 +216,4 @@ int DogRegister::Checkarg() {
 	return ret;
 
 }
+

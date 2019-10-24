@@ -17,7 +17,6 @@ public:
 
     eModError Store(char* pPath, unsigned char* pData, unsigned int data_size);
     eModError Load(char* pPath, unsigned char** ppData, unsigned int& data_size);
-	eModError Compare(char* pPath, unsigned char* ppData, unsigned int& data_size);
 
 private:
     void InitiateWb();
