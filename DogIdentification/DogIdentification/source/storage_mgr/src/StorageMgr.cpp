@@ -88,7 +88,7 @@ eModError StorageMgr::Load(eSecurityType data_type, char* pPath, unsigned char**
         pSecureInst = SecureStorage::GetInstance();
         if (pSecureInst)
         {
-
+			ret=pSecureInst->Load(pPath, ppData, data_size);
         }
         else
         {
@@ -101,4 +101,27 @@ eModError StorageMgr::Load(eSecurityType data_type, char* pPath, unsigned char**
     }
 
     return ret;
+}
+eModError StorageMgr::Compare(eSecurityType data_type, char* pPath, unsigned char* ppData, unsigned int& data_size) {
+	eModError ret = eMOD_ERROR_SUCCESS;
+	SecureStorage* pSecureInst = NULL;
+
+	if (data_type == eSECURITY_TYPE_IMPORTANT)
+	{
+		///< compare to secure storage
+		pSecureInst = SecureStorage::GetInstance();
+		if (pSecureInst)
+		{
+			ret = pSecureInst->Compare(pPath, ppData, data_size);
+		}
+		else
+		{
+			ret = eMOD_ERROR_INSTANCE_NULL;
+		}
+	}
+	else
+	{
+	}
+
+	return ret;
 }

@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-
 // Login 대화 상자
 
 class Login : public CDialogEx
@@ -20,7 +19,11 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
-public:
 
+private:
+	CEdit m_editPassword;
+	CString m_inputPassword;
+public:
 	afx_msg void OnBnClickedBtnLogin();
+	afx_msg void OnBnClickedBtnCancel();
 };

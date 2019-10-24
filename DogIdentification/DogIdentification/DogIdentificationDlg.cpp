@@ -132,7 +132,7 @@ BOOL CDogIdentificationDlg::OnInitDialog()
 	{
 		Login login_dlg;
 		login_dlg.DoModal();
-		///< input password
+
 	}
 	else
 	{

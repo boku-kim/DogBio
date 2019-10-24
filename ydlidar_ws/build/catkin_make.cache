@@ -1,0 +1,2 @@
+ydlidar
+-DCATKIN_DEVEL_PREFIX=/home/nvidia/ydlidar_ws/devel -DCMAKE_INSTALL_PREFIX=/home/nvidia/ydlidar_ws/install -G Unix Makefiles
