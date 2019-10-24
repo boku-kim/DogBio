@@ -18,7 +18,6 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
-
 	DECLARE_MESSAGE_MAP()
 private:
 	CStatic m_picDog;
@@ -40,7 +39,6 @@ public:
 	afx_msg void OnBnClickedBtnOpencamera();
 	afx_msg void OnBnClickedBtnAnalysis();
 	afx_msg void RadioCtrl(UINT ID);
-	
 	afx_msg void OnBnClickedOk();
 	CButton m_analysis;
 };

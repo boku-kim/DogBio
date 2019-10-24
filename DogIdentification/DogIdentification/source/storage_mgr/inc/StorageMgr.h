@@ -21,7 +21,6 @@ public:
 
     eModError Store(eSecurityType data_type, char* pPath, unsigned char* pData, unsigned int data_size);
     eModError Load(eSecurityType data_type, char* pPath, unsigned char** ppData, unsigned int& data_size);
-	eModError Compare(eSecurityType data_type, char* pPath, unsigned char* ppData, unsigned int& data_size);
 
 private:
     static StorageMgr* m_pInst;

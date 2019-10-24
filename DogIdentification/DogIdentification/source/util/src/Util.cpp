@@ -108,7 +108,7 @@ bool Util::ExistFile(char* pszFilePath)
 {
     FILE* pFile = NULL;
 
-    fopen_s(&pFile, pszFilePath, "rb");
+    fopen_s(&pFile, pszFilePath, "r");
     if (pFile)
     {
         fclose(pFile);
