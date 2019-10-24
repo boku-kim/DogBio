@@ -2,16 +2,18 @@
 #include "DbAccess.h"
 #include "SearchDogInfo.h"
 
+
 Dogdata DbAccess::_dog_info;
 
 
-void DbAccess::DbSetting(CString _name, CString _age, CString _gender, CString _species, CString _address)
+void DbAccess::DbSetting(CString _name, CString _age, CString _gender, CString _species, CString _address, CString _dogimg)
 {
 	_dog_info.name = _name;
 	_dog_info.age = _age;
 	_dog_info.gender = _gender;
 	_dog_info.species = _species;
 	_dog_info.address = _address;
+	_dog_info.dogimg = _dogimg;
 }
 
 
@@ -80,7 +82,7 @@ void DbAccess::DbUpdate()
 			try
 			{
 				CString str;
-				str.Format("UPDATE so_test_191008_1 SET _NAME ='%s', GENDER='%s', AGE='%s' ,SPECIES='%s', ADDRESS='%s' WHERE ID = %s", _dog_info.name, _dog_info.gender, _dog_info.age, _dog_info.species, _dog_info.address, _dog_info.id);
+				str.Format("UPDATE so_test_191008_1 SET _NAME ='%s', GENDER='%s', AGE='%s' ,SPECIES='%s', ADDRESS='%s',IMAGE='%s' WHERE ID = %s", _dog_info.name, _dog_info.gender, _dog_info.age, _dog_info.species, _dog_info.address,_dog_info.dogimg, _dog_info.id);
 
 				OutputDebugString(str);
 				db.ExecuteSQL(str);
@@ -107,6 +109,7 @@ void DbAccess::DbOutting()
 	SearchDogInfo::m_gender = _dog_info.gender;
 	SearchDogInfo::m_dogSpecies = _dog_info.species;
 	SearchDogInfo::m_dogAddr = _dog_info.address;
+	SearchDogInfo::m_dogimg = _dog_info.dogimg;
 
 	sprintf_s(szMessage, 128, "YOYOYOYOYOYOYYO %s  %s.\n", SearchDogInfo::m_dogName, _dog_info.id);
 	OutputDebugString(szMessage);
@@ -178,6 +181,7 @@ void DbAccess::DbSearch()
 						rs.GetFieldValue("AGE", _dog_info.age);
 						rs.GetFieldValue("SPECIES", _dog_info.species);
 						rs.GetFieldValue("ADDRESS", _dog_info.address);
+						rs.GetFieldValue("IMAGE", _dog_info.dogimg);
 
 						rs.MoveNext();
 					}
@@ -275,7 +279,7 @@ void DbAccess::DbInsert()
 					{
 
 						CString str;
-						str.Format("INSERT INTO so_test_191008_1 (_NAME, GENDER, AGE ,SPECIES, ADDRESS) VALUES('%s','%s','%s','%s','%s')", _dog_info.name, _dog_info.gender, _dog_info.age, _dog_info.species, _dog_info.address);
+						str.Format("INSERT INTO so_test_191008_1 (_NAME, GENDER, AGE ,SPECIES, ADDRESS, IMAGE) VALUES('%s','%s','%s','%s','%s','%s')", _dog_info.name, _dog_info.gender, _dog_info.age, _dog_info.species, _dog_info.address, _dog_info.dogimg);
 						//db.ExecuteSQL("INSERT INTO so_test_191008_1 (_NAME, GENDER ,AGE ,SPECIES, ADDRESS) VALUES('%s','%s','%s','%s')", _edit_name, _edit_age, _edit_species, _edit_address);
 						db.ExecuteSQL(str);
 						sprintf_s(szMessage, 128, "»ðÀÔ!!\n", field_count);

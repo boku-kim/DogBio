@@ -45,3 +45,26 @@
 
 
 
+
+
+
+-2019.10.24 오후까지의 업데이트 상황
+
+1. CateraMgr.cpp 의 void CameraMgr::OnBnClickedOk()에서 잘못된 DC가 Release 되고있기에 수정함.
+	::ReleaseDC(m_camerapic->m_hWnd, dc);  에서 ::ReleaseDC(m_picDog->m_hWnd, dc); 로 수정
+
+2. DbAccess에 Image_path에 관련된 부분들 추가
+
+3. SearchDogInfo에 search/edit/delete 기능 추가
+	
+	search -> 아직도 일단은 제일 마지막에 저장된 정보를 찾는다.
+		   -> 이미지 없으면 이미지가 없다는 알림창이 뜬다.
+
+	edit   -> 수정할 때에는 일단 저장되어있던 사진 파일을 지우고, 현재 지정된 이름으로 다시 저장한다. (방식은 dogRegister와 동일)
+		   -> DbAccess::DbSetting(m_dogName, m_dogAge, m_gender, m_dogSpecies, m_dogAddr, file_name); 에서 마지막이 file_name인 이유는 새로운 경로 저장하려고.
+		   -> edit 할때 이상한 값이 들어오는걸 막기 위해 DogRegister에 있던 Checkarg()함수 복붙함 -> 근데 '같은 문자 넣는것을 막아야 한다,,,, db에 넣을 때 에러남...
+
+	delete -> 사진 파일이 있으면 사진을 지우고, db_table안의 정보를 다 지운다.
+		   -> 지운 후에는 화면 초기화 (Invalidate(true); 사용)
+
+

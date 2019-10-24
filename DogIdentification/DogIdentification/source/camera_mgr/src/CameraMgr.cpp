@@ -102,7 +102,7 @@ void CameraMgr::OnBnClickedOk()
 	cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
 	//save_img.BitBlt(dc, 0, 0);
 	//cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
-	::ReleaseDC(m_camerapic.m_hWnd, dc);
+	::ReleaseDC(m_picDog->m_hWnd, dc);
 
 	/*
 	** 카메라 반납
