@@ -38,6 +38,8 @@ using namespace std;
 string target = "dog";
 bool detect_target = false;
 
+int numClasses = 1;
+
 // shared area를 위한 Mutex 전역 변수 선언
 pthread_mutex_t g_MutextForSharedInfo; //= PTHREAD_MUTEX_INITIALIZER;
 
@@ -130,7 +132,7 @@ struct yolo_msgs//sensor_msgs::LaserScan
 typedef struct test_data
 {
     laserscan_msgs lidar_info;  //lidar data
-    yolo_msgs yolo_info;  //yolo data
+    yolo_msgs shared_yoloinfo;  //yolo data
 
 }AroundInfo;
 
@@ -147,57 +149,108 @@ int do_Logic()
     shared_info = stru_sharedInfo;
     pthread_mutex_unlock(&g_MutextForSharedInfo);
 
-    currentChannel = STEERING_CHANNEL;
 
-    if (shared_info.lidar_info.left_dis < 0.5)
+    /*
+    ** 강아지가 잡히면 우선권 yolo가 가짐
+    */
+    if (shared_info.shared_yoloinfo.dog_xmax >= 0)
     {
 
-       currentPWM = PWM_LEFT;
-      // printf("Left_obstacle = %f \n", shared_info.lidar_info.left_dis);
-       printf("Left-");
+            float xmax = shared_info.shared_yoloinfo.dog_xmax;
+            float xmin = shared_info.shared_yoloinfo.dog_xmin;
+            float ymax = shared_info.shared_yoloinfo.dog_ymax;
+            float ymin = shared_info.shared_yoloinfo.dog_ymin;
+            float cp = shared_info.shared_yoloinfo.object_cp;
+
+            int x_deg_l = 320 - cp;
+            int x_deg_r = cp - 320;
+
+    	for (int i = 0; i < numClasses; i++){
+
+
+            // left steering
+            if( cp > 0 && cp < 216 ){
+                    printf("object is detected leftside");
+
+                    currentChannel = STEERING_CHANNEL;
+                    currentPWM = 307 - ( 0.3 * x_deg_l );
+                    pca9685->setPWM(currentChannel, 0, currentPWM);
+                    printf("4. currentPWM_left = %f\n", currentPWM);
+            }
+            // right steering
+            else if( cp > 424 && cp < 640 ){
+                    printf("object is detected rightside");
+                    currentChannel = STEERING_CHANNEL;
+                    currentPWM = 307 + ( 0.3 * x_deg_r );
+                    pca9685->setPWM(currentChannel, 0, currentPWM);
+                    printf("5. currentPWM_right = %f\n", currentPWM);
+            }
+            // front
+            else if( cp > 216 && cp < 424 ){
+                    printf("object is detected front");
+                    currentChannel = ESC_CHANNEL;
+                    currentPWM = PWM_MIDDLE;
+                    printf("2. currentPWM2 = %f\n", currentPWM);
+        	}
+		}		
 
     }
-    else if (shared_info.lidar_info.right_dis < 0.5)
-    {
+    //강아지가 안잡힐때 LIDAR
 
-       currentPWM = PWM_RIGHT;
-      // printf("Right_obstacle = %f\n", shared_info.lidar_info.right_dis);
-       printf("right-");
+   else{
 
-    }
+        currentChannel = STEERING_CHANNEL;
 
-   else
-   {
-        currentPWM = PWM_NEUTRAL;
-        printf("mid-");
-   }
+        if (shared_info.lidar_info.left_dis < 0.5)
+        {
 
-    pca9685->setPWM(currentChannel, 0, currentPWM);
+            currentPWM = PWM_LEFT;
+            // printf("Left_obstacle = %f \n", shared_info.lidar_info.left_dis);
+            printf("Left-");
+
+         }
+        else if (shared_info.lidar_info.right_dis < 0.5)
+        {
+
+            currentPWM = PWM_RIGHT;
+            // printf("Right_obstacle = %f\n", shared_info.lidar_info.right_dis);
+            printf("right-");
+
+        }
+
+        else
+        {
+            currentPWM = PWM_NEUTRAL;
+             printf("mid-");
+        }
+
+         pca9685->setPWM(currentChannel, 0, currentPWM);
 
 
-       currentChannel = ESC_CHANNEL;
-    //   printf("[YDLIDAR INFO]: angle : [%f, %f] i=%d\n", degree, distance, i);
+         currentChannel = ESC_CHANNEL;
+         //   printf("[YDLIDAR INFO]: angle : [%f, %f] i=%d\n", degree, distance, i);
 
-       float distance = shared_info.lidar_info.center_dis;
+         float distance = shared_info.lidar_info.center_dis;
 
-       if(distance < 0.3)
-       {
+        if(distance < 0.3)
+        {
            currentPWM = PWM_NEUTRAL;
            printf("1. currentPWM1 = %f\n", currentPWM);
-       }
-       else if(distance >= 0.3 && distance < 0.8)
-       {
+        }
+        else if(distance >= 0.3 && distance < 0.8)
+        {
            currentPWM = PWM_MIDDLE;
            printf("2. currentPWM2 = %f\n", currentPWM);
-       }
-       else if(distance >= 0.8)
-       {
+        }
+        else if(distance >= 0.8)
+        {
            currentPWM = PWM_HIGH;
            printf("3. currentPWM3 = %f\n", currentPWM);
-       }
-       pca9685->setPWM(currentChannel, 0, currentPWM);
-       //printf("currunetCH: %d\n", currentChannel);
+        }
+        pca9685->setPWM(currentChannel, 0, currentPWM);
+        //printf("currunetCH: %d\n", currentChannel);
 
+   }
 }
 
 
@@ -340,29 +393,42 @@ void dogCallback(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 	printf("[object]: %s \n [x_min]: %d \n [y_min]: %d \n [x_max]: %d \n [y_max]: %d \n", boundingBox.Class, boundingBox.xmin,boundingBox.ymin, boundingBox.xmax, boundingBox.ymax);
 */
 
-     pthread_mutex_lock(&g_MutextForSharedInfo);
+    
      if(msg->bounding_boxes[0].Class.compare(target) == 0)
      {
 
-	cout<<">>>>TARGET (Class):" << msg->bounding_boxes[0].Class <<endl;
-	cout<<"Bounding Boxes (Header):" << msg->header <<endl;
-	cout<<"Bounding Boxes (image_header):" << msg->image_header <<endl;	
-	cout<<"Bounding Boxes (Class):" << msg->bounding_boxes[0].Class <<endl;
-	cout<<"Bounding Boxes (xmax):" << msg->bounding_boxes[0].xmax <<endl;
-	cout<<"Bounding Boxes (xmin):" << msg->bounding_boxes[0].xmin <<endl;
-	cout<<"Bounding Boxes (ymax):" << msg->bounding_boxes[0].ymax <<endl;
-	cout<<"Bounding Boxes (ymin):" << msg->bounding_boxes[0].ymin <<endl;
+		cout<<">>>>TARGET (Class):" << msg->bounding_boxes[0].Class <<endl;
+		cout<<"Bounding Boxes (Header):" << msg->header <<endl;
+		cout<<"Bounding Boxes (image_header):" << msg->image_header <<endl;	
+		cout<<"Bounding Boxes (Class):" << msg->bounding_boxes[0].Class <<endl;
+		cout<<"Bounding Boxes (xmax):" << msg->bounding_boxes[0].xmax <<endl;
+		cout<<"Bounding Boxes (xmin):" << msg->bounding_boxes[0].xmin <<endl;
+		cout<<"Bounding Boxes (ymax):" << msg->bounding_boxes[0].ymax <<endl;
+		cout<<"Bounding Boxes (ymin):" << msg->bounding_boxes[0].ymin <<endl;
 	
 
-	cout << "\033[2J\033[1;1H";		//clear terminal
-     }
-     	stru_sharedInfo.yolo_info.dog_xmax = msg->bounding_boxes[0].xmax;
-	stru_sharedInfo.yolo_info.dog_xmin = msg->bounding_boxes[0].xmin;
-	stru_sharedInfo.yolo_info.dog_ymax = msg->bounding_boxes[0].ymax;
-	stru_sharedInfo.yolo_info.dog_ymin = msg->bounding_boxes[0].ymin;
-	stru_sharedInfo.yolo_info.object_cp = (stru_sharedInfo.yolo_info.dog_xmax + stru_sharedInfo.yolo_info.dog_xmin)/2;
+		cout << "\033[2J\033[1;1H";		//clear terminal
+     
+ 	pthread_mutex_lock(&g_MutextForSharedInfo);
+
+    stru_sharedInfo.shared_yoloinfo.dog_xmax = msg->bounding_boxes[0].xmax;
+	stru_sharedInfo.shared_yoloinfo.dog_xmin = msg->bounding_boxes[0].xmin;
+	stru_sharedInfo.shared_yoloinfo.dog_ymax = msg->bounding_boxes[0].ymax;
+	stru_sharedInfo.shared_yoloinfo.dog_ymin = msg->bounding_boxes[0].ymin;
+    stru_sharedInfo.shared_yoloinfo.object_cp = (stru_sharedInfo.shared_yoloinfo.dog_xmax + stru_sharedInfo.shared_yoloinfo.dog_xmin)/2.0;
 
      pthread_mutex_unlock(&g_MutextForSharedInfo);
+	}
+	else
+	{
+	pthread_mutex_lock(&g_MutextForSharedInfo);
+	stru_sharedInfo.shared_yoloinfo.dog_xmax = -1 ;
+	stru_sharedInfo.shared_yoloinfo.dog_xmin = -1 ;
+	stru_sharedInfo.shared_yoloinfo.dog_ymax = -1 ;
+	stru_sharedInfo.shared_yoloinfo.dog_ymin = -1 ;
+
+	pthread_mutex_unlock(&g_MutextForSharedInfo);
+    }
 }
 
 void initialset()
