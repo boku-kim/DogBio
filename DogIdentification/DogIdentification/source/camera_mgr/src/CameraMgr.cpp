@@ -79,6 +79,7 @@ void CameraMgr::OnBnClickedBtnTake()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	KillTimer(1000);
+	
 }
 
 
@@ -89,14 +90,31 @@ void CameraMgr::OnBnClickedOk()
 	m_picDog->GetClientRect(rect);
 
 	cimage_mfc.Create(rect.Width(), rect.Height(), 24);
-	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, camera_r.right, camera_r.bottom, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+	if (save_img->IsNull() != true)
+	{
+		save_img->Destroy();
+	}
+	save_img->Create(rect.Width(), rect.Height(), 24, 0);
+	StretchDIBits(cimage_mfc.GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, imgWidth, imgHeight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+	StretchDIBits(save_img->GetDC(), 0, 0, rect.Width(), rect.Height(), 0, 0, imgWidth, imgHeight, mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
 	HDC dc = ::GetDC(m_picDog->m_hWnd);
-	cimage_mfc.BitBlt(dc, 0, 0); //화면에 띄움
-	//cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
+	//cimage_mfc.BitBlt(dc, 0, 0); //화면에 띄움
+	cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
+	//save_img.BitBlt(dc, 0, 0);
 	//cimage_mfc.TransparentBlt(dc, 0, 0, rect.right, rect.bottom, SRCCOPY);
 	::ReleaseDC(m_camerapic.m_hWnd, dc);
 
+	/*
+	** 카메라 반납
+	** 이걸 해야 카메라가 꺼지고 다시 켤수있음
+	*/
+	if (capture)
+	{
+		delete capture;
+	}
+
 	cimage_mfc.ReleaseDC();
+	save_img->ReleaseDC();
 	cimage_mfc.Destroy();
 
 	CDialogEx::OnOK();
@@ -106,6 +124,16 @@ void CameraMgr::OnBnClickedOk()
 void CameraMgr::OnBnClickedCancel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	/*
+   ** 카메라 반납
+   ** 이걸 해야 카메라가 꺼지고 다시 켤수있음
+   */
+	if (capture)
+	{
+		delete capture;
+	}
+
 	CDialogEx::OnCancel();
 }
 void CameraMgr::OnTimer(UINT_PTR nIDEvent)
@@ -196,6 +224,7 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 			0, 0, winSize.width, winSize.height,
 			0, 0, 0, mat_temp.rows,
 			mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		
 	}
 	else
 	{
@@ -214,6 +243,7 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 			destx, desty, destw, desth,
 			imgx, imgy, imgWidth, imgHeight,
 			mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+		
 	}
 
 	HDC dc = ::GetDC(m_camerapic.m_hWnd);
@@ -224,5 +254,5 @@ void CameraMgr::OnTimer(UINT_PTR nIDEvent)
 	cimage_mfc.ReleaseDC();
 	cimage_mfc.Destroy();
 
-	CDialogEx::OnTimer(nIDEvent);
+	CDialogEx::OnTimer(nIDEvent);	
 }

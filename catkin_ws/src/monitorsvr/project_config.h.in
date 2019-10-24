@@ -1,0 +1,3 @@
+#define MOD_VERSION_MAJOR  @monitorsvr_VERSION_MAJOR@
+#define MOD_VERSION_MINOR  @monitorsvr_VERSION_MINOR@
+
