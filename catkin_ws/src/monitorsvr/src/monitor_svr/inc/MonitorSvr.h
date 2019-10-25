@@ -21,7 +21,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 
-#define DT_MONITOR_SVR_SOCKET_PORT              11111
+#define DT_MONITOR_SVR_SOCKET_PORT              77777
 #define DT_MONITOR_SVR_SOCKET_IN_QUEUE_CNT      5
 #define DT_MONITOR_SVR_OK_PACKET                "ok"
 #define DT_MONITOR_SVR_RECV_BUFF_LENGTH         1024
@@ -170,6 +170,7 @@ public:
 	DT_STATUS StopServer();
     DT_STATUS AddItem(DtSendDataWrap_t* pItem);
     DT_STATUS GetItem(DtSendDataWrap_t** pItem);
+    void ClearAll();
 
 private:
     
@@ -190,6 +191,7 @@ private:
     pthread_t m_tid;
     
     pthread_mutex_t m_mutex_queue;
+public:
     SendDataQueueType m_queue;
     
 };

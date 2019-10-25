@@ -22,27 +22,39 @@ static DWORD s_internal_loop = 1;
 
 ///< Monitor Server Logic Implementation
 
+void FreeSendDataWrap(DtSendDataWrap_t* pWrap);
+
 /**
 ****************************************************************************************************
 * @brief : check whether reading is enabled.
 ****************************************************************************************************
 */
 //TODO ClearAll
-void ClearAll(){
-     DtSendDataWrap_t* pItem = NULL;
+void MonitorServer::ClearAll(){
+	
+ 	pthread_mutex_lock(&m_mutex_queue);
     while (1)
-    {
-        pthread_mutex_lock(&m_mutex_queue);
-        GetItem(&pItem);
-        pthread_mutex_unlock(&m_mutex_queue);
-        if (pItem == NULL)
+    {   
+		DtSendDataWrap_t* ppItem = NULL;
+   		if (m_queue.size() > 0)
+    	{
+        	ppItem = m_queue[m_queue.size() - 1];
+        	m_queue.pop_back();
+   		}
+
+        //GetItem(&pItem);
+        
+        if (ppItem == NULL)
         {
             break;
         }
-        FreeSendDataWrap(pItem);
+        FreeSendDataWrap(ppItem);
     }
     m_queue.clear();
+	DT_CHECK_POINT("^^^^^^^^^^^^^^^^^^^^queue size: %d", m_queue.size());
+	pthread_mutex_unlock(&m_mutex_queue);
 }
+
 //TODO redady_for_reading
 DT_STATUS ready_for_reading(int socket_fd, DWORD msec)
 {
@@ -448,7 +460,7 @@ DT_STATUS MergePacket(BYTE** ppTargetBinary, int& nTargetSize, BYTE* pSourceBina
 ****************************************************************************************************
 */
 //TODO communicate_to_client
-void communicate_to_client(int socket_fd)
+void communicate_to_client(int socket_fd,MonitorServer* pParent)
 {
     DT_STATUS ret = DT_STATUS_OK;
     DtFullDataWrap_t* pDataWrap = NULL;
@@ -462,10 +474,11 @@ void communicate_to_client(int socket_fd)
     int nReceiveOk = 0;
 
     while (s_internal_loop)
-    {
+    {	
         DT_CHECK_POINT("Wait for the packet being sent from client.");
         ///< Receive packet
         nReceiveOk = 0;
+ 		
         while (!nReceiveOk)
         {
             read_size = read(socket_fd, ReceiveBuff, sizeof(ReceiveBuff));
@@ -508,6 +521,7 @@ void communicate_to_client(int socket_fd)
 
         ///< parsing packet
         ret = ParsePacket(pBuffer, buffer_size, &pDataWrap);
+		
         if (ret != DT_STATUS_OK)
         {
             DT_CHECK_POINT("ParsePacket was failed.");
@@ -568,7 +582,7 @@ void communicate_to_client(int socket_fd)
             send_size = 0;
             return; ///< TODO : need to remove the comment.
         }
-
+		pParent->ClearAll();
         DogTrack_SleepMs(1000);
     } // end while (s_internal_loop)
     
@@ -605,8 +619,7 @@ void* dt_server_handler(void* data)
             DT_CHECK_POINT("invalid client socket descriptor[%d].", pParent->m_client_fd);
             continue;
         }
-        ClearAll();
-        communicate_to_client(pParent->m_client_fd);
+        communicate_to_client(pParent->m_client_fd,pParent);
         if (pParent->m_client_fd > 0)
         {
             close(pParent->m_client_fd);
@@ -709,7 +722,7 @@ DT_STATUS MonitorServer::StartServer()
     }
         
     m_server_addr.sin_family = AF_INET;
-    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY : ?ÑúÎ≤ÑÏùò IP Ï£ºÏÜåÎ•? ?ûê?èô?úºÎ°? Ï∞æÏïÑ?Ñú ????ûÖ
+    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY : ??≈ìe¬≤?i?? IP iÔø°¬ºi‚Ä†≈íeÔø•? ?????‚Ñ¢?≈ì¬ºe¬°? i¬∞¬æi????≈ì ?????‚Ä¶
     m_server_addr.sin_port = htons(DT_MONITOR_SVR_SOCKET_PORT);
 
     /*

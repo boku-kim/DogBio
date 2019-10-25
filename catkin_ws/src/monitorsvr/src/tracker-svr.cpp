@@ -19,8 +19,14 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Int8.h"
+#include "sensor_msgs/Image.h"
 #include "darknet_ros_msgs/BoundingBoxes.h"
 #include "darknet_ros_msgs/BoundingBox.h"
+#include "cv_bridge/cv_bridge.h"
+#include "image_transport/image_transport.h"
+#include "sensor_msgs/image_encodings.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 #include "SignalHandler.h"
 #include "MonitorSvr.h"
 #include "Utils.h"
@@ -29,6 +35,7 @@
 #define SUBSCRIBE_TOPIC_NAME        "/scan"
 #define FOUNDOBJECT_TOPIC_NAME		"/darknet_ros/found_object"
 #define BOUNDINGBOX_TOPIC_NAME		"/darknet_ros/bounding_boxes"
+#define DETECTIONIMAGE_TOPIC_NAME	"/darknet_ros/detection_image"
 
 using namespace std;
 
@@ -40,16 +47,16 @@ DT_STATUS InitiateApplication();
 DT_STATUS TerminateApplication();
 void system_size_check();
 
-
 #define MAIN_SERVER_STOP_DELAY_TIME     5   // seconds
 
 #ifdef _TEST_DATA_SUPPORT
 static int s_test_data_support_loop = 1;
 std_msgs::String::ConstPtr tmpsg;
 darknet_ros_msgs::BoundingBoxes::ConstPtr boundingboxes;
-
+cv::Mat detectionImage;
 int object_cnt=0;
 string target = "apple";
+
 //TODO FreeSendData
 static void FreeSendData(DtSendDataWrap_t* pWrap)
 {
@@ -120,7 +127,7 @@ void* dt_test_data_supporter(void* data)
                 } // end for(...)
                 if (success)
                 {
-                    pMonitor->AddItem(pItem);
+					pMonitor->AddItem(pItem);
                     DogTrack_SleepMs(300);
                 }
                 else
@@ -191,7 +198,7 @@ void system_size_check()
     DT_CHECK_POINT("size for application >> (BYTE size:%u bytes) (WORD size:%u bytes) (DWORD size:%u bytes)",
         sizeof(BYTE), sizeof(WORD), sizeof(DWORD));
 }
-//TODO machine_info_Callback
+//TODO Callback
 void machine_info_Callback(const std_msgs::String::ConstPtr& msg)
 {
     tmpsg=msg;
@@ -199,14 +206,26 @@ void machine_info_Callback(const std_msgs::String::ConstPtr& msg)
     DT_CHECK_POINT(tmpsg->data.c_str());
 }
 
-
+//TODO Callback_FoundObject
 void machine_info_Callback_FoundObject(const std_msgs::Int8& msg)
 {
     //tmpsg=msg;
 	//DT_CHECK_POINT(msg.data);
 	object_cnt=(int)msg.data;
-	ROS_INFO("received object cnt : [%d]",msg.data);	
+	ROS_INFO("received object cnt : [%d]",object_cnt);	
 }
+//TODO Callback_Image
+void machine_info_Callback_Image(const sensor_msgs::Image& msg)
+{
+  //detectedImage=msg;
+  cv_bridge::CvImagePtr cv_ptr;
+  cv_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+  detectionImage=cv_ptr->image;
+  cv::imshow("window",detectionImage);
+  cv::waitKey(1);
+
+}
+//TODO Callback BoundingBoxes
 void machine_info_Callback_BoundingBoxes(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 {
 	boundingboxes=msg;
@@ -277,6 +296,7 @@ int main(int argc, char* argv[])
     ///< how you tell ROS that you want to receive messages on a given topic.  
     ros::Subscriber FoundObjectSubscriber = hThidNode.subscribe(FOUNDOBJECT_TOPIC_NAME, 1000, machine_info_Callback_FoundObject);
 	ros::Subscriber BoundingBoxSubscriber = hThidNode.subscribe(BOUNDINGBOX_TOPIC_NAME, 1000, machine_info_Callback_BoundingBoxes);
+	ros::Subscriber ImageSubscriber = hThidNode.subscribe(DETECTIONIMAGE_TOPIC_NAME, 1000, machine_info_Callback_Image);
     //ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
     ///< will enter a loop, pumping callbacks.
@@ -286,7 +306,6 @@ int main(int argc, char* argv[])
 	/* //[[ comment___BEGIN -- tmep.nohgan
 	GMainLoop *main_loop = NULL;
     printf("starting\n");
-
 	main_loop = g_main_loop_new(NULL, FALSE);
 	if (main_loop == NULL)
 	{
@@ -339,4 +358,3 @@ int main(int argc, char* argv[])
     DT_CHECK_POINT("process will be exit.");
     return ret;
 }
-
