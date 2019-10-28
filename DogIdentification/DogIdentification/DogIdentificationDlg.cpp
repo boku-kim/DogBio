@@ -130,8 +130,13 @@ BOOL CDogIdentificationDlg::OnInitDialog()
     int nSuccessProcessPasswd = 0;
 	if (TestFunction01() == eMOD_ERROR_SUCCESS)
 	{
+		INT_PTR nRet;
 		Login login_dlg;
-		login_dlg.DoModal();
+		nRet = login_dlg.DoModal();
+		if (nRet == IDCANCEL)
+		{
+			CDialogEx::OnCancel();
+		}
 
 	}
 	else
@@ -234,11 +239,13 @@ int GetTextFromResource(int nResourceId)
 eModError CDogIdentificationDlg::TestFunction01() {
 	Util* pUtilInst = NULL;
 	eModError ret = eMOD_ERROR_FAIL;
+	CString path;
 
 	pUtilInst = Util::GetInstance();
 	if (pUtilInst)
 	{
-		bool bExist = pUtilInst->ExistFile(MY_PASSWORD_FILE_PATH);
+		path.Format("%s\\%s", MY_PASSWORD_FILE_PATH, MY_PASSWORD_FILE_NAME);
+		bool bExist = pUtilInst->ExistFile((LPSTR)(LPCTSTR)path);
 		if (bExist == true)
 		{
 			m_bAlreadySetPasswd = true;
@@ -246,6 +253,7 @@ eModError CDogIdentificationDlg::TestFunction01() {
 		}
 		else
 		{
+			CreateDirectory((LPCTSTR)MY_PASSWORD_FILE_PATH, NULL);
 			m_bAlreadySetPasswd = false;
 			ret = eMOD_ERROR_FAIL;
 		}

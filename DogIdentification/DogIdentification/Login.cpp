@@ -50,7 +50,9 @@ void Login::OnBnClickedBtnLogin()
 	CDogIdentificationDlg* pDlg = (CDogIdentificationDlg*)AfxGetMainWnd();
 	pDlg->GetCurrentModulePath(strCurrentPath);
 	strDataPath = strCurrentPath + "data";
-	sprintf_s(szFilePath, sizeof(szFilePath), "%s\\%s", (LPTSTR)(LPCTSTR)strDataPath, MY_PASSWORD_FILENAME);
+	sprintf_s(szFilePath, sizeof(szFilePath), "%s\\%s", MY_PASSWORD_FILE_PATH, MY_PASSWORD_FILE_NAME);
+	//sprintf_s(szFilePath, sizeof(szFilePath), "%s", MY_PASSWORD_FILE_PATH);
+	
 	m_editPassword.GetWindowTextA(m_inputPassword);
 	unsigned int  data_size = m_inputPassword.GetLength();
 	

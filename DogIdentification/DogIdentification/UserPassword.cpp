@@ -54,26 +54,40 @@ void UserPassword::OnBnClickedOk()
 		///< get password2
 		m_editPassword2.GetWindowTextA(m_strPasswordcheck);
 		if (CheckPW(m_strPassword, m_strPasswordcheck)) {
-			MessageBox(_T("Password 등록"), _T("Password Check"), MB_OK);
+			//MessageBox(_T("Password 등록"), _T("Password Check"), MB_OK);
 
             eModError ret = eMOD_ERROR_SUCCESS;
             char szFilePath[MAX_PATH] = { 0 };
-            CString strCurrentPath;
-            CString strDataPath;
+            //CString strCurrentPath;
+            //CString strDataPath;
+			CString check;
 
-            CDogIdentificationDlg* pDlg = (CDogIdentificationDlg*)AfxGetMainWnd();
-            pDlg->GetCurrentModulePath(strCurrentPath);
-            strDataPath = strCurrentPath + "data";
-            sprintf_s(szFilePath, sizeof(szFilePath), "%s\\%s", (LPTSTR)(LPCTSTR)strDataPath, MY_PASSWORD_FILENAME);
+            //CDogIdentificationDlg* pDlg = (CDogIdentificationDlg*)AfxGetMainWnd();
+            //pDlg->GetCurrentModulePath(strCurrentPath);
+            //strDataPath = MY_PASSWORD_FILE_PATH;
+            sprintf_s(szFilePath, sizeof(szFilePath), "%s\\%s", MY_PASSWORD_FILE_PATH, MY_PASSWORD_FILE_NAME);
             StorageMgr* pStorage = StorageMgr::GetInstance();
+	
             if (pStorage)
             {
-                ret = pStorage->Store(eSECURITY_TYPE_IMPORTANT, szFilePath, (unsigned char*)(LPTSTR)(LPCTSTR)m_strPassword, m_strPassword.GetLength());
-                if (ret == eMOD_ERROR_SUCCESS)
+				
+				
+                ret = pStorage->Store(eSECURITY_TYPE_IMPORTANT, szFilePath, (unsigned char*)(LPTSTR)(LPCTSTR)m_strPassword, m_strPassword.GetLength()*sizeof(char));
+				//check.Format("%s----- %d----%d", (unsigned char*)(LPTSTR)(LPCTSTR)m_strPassword, m_strPassword.GetLength(),ret);
+				MessageBox(_T(check), _T("Password Check"), MB_OK);
+				if (ret == eMOD_ERROR_SUCCESS)
                 {
-                    MY_CHECK_POINT("패스워드 파일이 성공적으로 저장되었습니다.");
+                    //MY_CHECK_POINT("패스워드 파일이 성공적으로 저장되었습니다.");
+					MessageBox(_T("Password 등록"), _T("Password Check"), MB_OK);
                     m_nSucces = 1;
                 }
+
+				else
+				{
+					//printf("%d", ret);
+					
+					//MY_CHECK_POINT("nonononononono");
+				}
             }
 
 			CDialogEx::OnOK();            
@@ -88,6 +102,8 @@ void UserPassword::OnBnClickedOk()
 	else {
 		MessageBox(_T("Password 길이는 7~10 이어야 합니다."), _T("Password1 Valid"), MB_ICONERROR);
 	}
+
+	
 }
 
 

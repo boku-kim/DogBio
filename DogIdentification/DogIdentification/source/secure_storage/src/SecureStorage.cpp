@@ -10,19 +10,28 @@ static int WriteBinary(char* pszFilePath, char* mode, BYTE* pData, unsigned int 
 {
     FILE * pFile = NULL;
     size_t write_size = 0;
+	char szMessage[128] = { 0 };
+	
     if ((pszFilePath == NULL) || (mode == NULL) || (pData == NULL) || (data_size == 0))
     {
+		sprintf_s(szMessage, 128, "1111111 %s %s %s %ud.\n", pszFilePath,mode,pData,data_size);
+		OutputDebugString(szMessage);
         return -1;
     }
 
     fopen_s(&pFile, pszFilePath, mode);
+
     if (pFile == NULL)
     {
+		sprintf_s(szMessage, 128, "22222222.\n");
+		OutputDebugString(szMessage);
         return -1;
     }
     write_size = fwrite(pData, sizeof(BYTE), data_size, pFile);
     if (write_size != data_size)
     {
+		sprintf_s(szMessage, 128, "33333333333.\n");
+		OutputDebugString(szMessage);
         fclose(pFile);
         return -1;
     }
@@ -186,11 +195,14 @@ eModError SecureStorage::Store(char* pPath, unsigned char* pData, unsigned int d
     int func_ret = 0;
     BYTE* pEncrypt = NULL;
     DWORD encrypt_size = 0;
+	CString check;
 
     if ((pPath == NULL) || (pData == NULL) || data_size == 0)
     {
         return eMOD_ERROR_ARGUMENT_INVALID;
     }
+
+	
 
     func_ret = encrypt_wb128_cbc(pData, data_size, &pEncrypt, encrypt_size);
     if (func_ret == 0)
