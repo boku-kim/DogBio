@@ -9,12 +9,13 @@
 #include "ClientSocket.h"
 #include "SocketThread.h"
 
-#define DT_MONITOR_SVR_SOCKET_PORT              11111
+#define DT_MONITOR_SVR_SOCKET_PORT              33333
 #define DT_RECEIVED_MESSAGE                     WM_USER + 1
 #define DT_UPDATE_HELP                          WM_USER + 2
 #define DT_UPDATE_CONTROL                       WM_USER + 3
 #define DT_UPDATE_LOG                           WM_USER + 4
 //#define DT_CLIENT_RECV                          WM_USER + 5
+
 
 // CtrackermonitorDlg 대화 상자
 class CtrackermonitorDlg : public CDialogEx

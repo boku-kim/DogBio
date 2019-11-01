@@ -1,8 +1,9 @@
+
 /**
 ****************************************************************************************************
 * @file tracker-svr.cpp
 * @brief Main entry function for Dog tracker implementation.
-* @author 
+* @author
 * @date Created Oct 01, 2019
 * @see Coding standard guideline
 ****************************************************************************************************
@@ -56,13 +57,14 @@ darknet_ros_msgs::BoundingBoxes::ConstPtr boundingboxes;
 cv::Mat detectionImage;
 int object_cnt=0;
 string target = "apple";
+bool camera_on=false;
 
 //TODO FreeSendData
 static void FreeSendData(DtSendDataWrap_t* pWrap)
 {
     DtDetectedArea_t* pTemp = NULL;
     DtDetectedArea_t* pTarget = NULL;
-    
+
     if (pWrap)
     {
         pTarget = pWrap->detected_info;
@@ -84,7 +86,7 @@ void* dt_test_data_supporter(void* data)
     DtDetectedArea_t* area_next_store = NULL;
     DWORD idx = 0;
     DWORD success = 1;
-    
+
     pMonitor = MonitorServer::GetInstance();
     if (pMonitor)
     {
@@ -98,6 +100,8 @@ void* dt_test_data_supporter(void* data)
                 pItem->steering_angle = 5.5;
                 pItem->speed = 20;
                 pItem->detected_count = object_cnt;
+				pItem->cols=0;
+				pItem->rows=0;
                 for (idx = 0; idx < pItem->detected_count; ++idx)
                 {
                     detected_area = (DtDetectedArea_t*)malloc(sizeof(DtDetectedArea_t));
@@ -109,7 +113,7 @@ void* dt_test_data_supporter(void* data)
                         detected_area->w = 200;
                         detected_area->h = 200;
                         detected_area->cls = 10;
-                        ;
+                        
                         if (area_next_store != NULL)
                         {
                             area_next_store->pNext = detected_area;
@@ -125,10 +129,28 @@ void* dt_test_data_supporter(void* data)
                         success = 0;
                     } // end if (detected_area)
                 } // end for(...)
+				
+				if(camera_on){
+					int imgsize = detectionImage.total() * detectionImage.elemSize();
+					cout << "imgsize: " << imgsize << endl;
+                    DT_CHECK_POINT("image.total:%d  elemSize:%d", 
+                        detectionImage.total(), detectionImage.elemSize());
+                    pItem->bytes = (BYTE*)malloc(imgsize);
+                    if (pItem->bytes)
+                    {
+                        memcpy(pItem->bytes,detectionImage.data,imgsize);
+                        pItem->cols = detectionImage.cols;
+       					pItem->rows = detectionImage.rows;
+                    }
+				}
+				
                 if (success)
                 {
-					pMonitor->AddItem(pItem);
+                    pMonitor->AddItem(pItem);
+					object_cnt=0;
+					camera_on=false;
                     DogTrack_SleepMs(300);
+					
                 }
                 else
                 {
@@ -158,9 +180,9 @@ DT_STATUS InitiateApplication()
     }
 
 #ifdef _TEST_DATA_SUPPORT
-    if (pthread_create(&g_test_tid, 
-                       NULL, 
-                       &dt_test_data_supporter, 
+    if (pthread_create(&g_test_tid,
+                       NULL,
+                       &dt_test_data_supporter,
                        (void *)NULL) != 0)
     {
         DT_CHECK_POINT("Creating test-data-supporter was failed.");
@@ -168,7 +190,7 @@ DT_STATUS InitiateApplication()
     }
 #endif // _TEST_DATA_SUPPORT
 
-	return DT_STATUS_OK;
+        return DT_STATUS_OK;
 }
 
 //TODO TerminateApplication
@@ -185,7 +207,7 @@ DT_STATUS TerminateApplication()
 
     MonitorServer::ReleaseInstance();
     SignalHandler::ReleaseInstance();
-	return DT_STATUS_OK;
+        return DT_STATUS_OK;
 }
 //TODO system_size_check()
 void system_size_check()
@@ -210,37 +232,36 @@ void machine_info_Callback(const std_msgs::String::ConstPtr& msg)
 void machine_info_Callback_FoundObject(const std_msgs::Int8& msg)
 {
     //tmpsg=msg;
-	//DT_CHECK_POINT(msg.data);
-	object_cnt=(int)msg.data;
-	ROS_INFO("received object cnt : [%d]",object_cnt);	
+        //DT_CHECK_POINT(msg.data);
+        object_cnt=(int)msg.data;
+        //ROS_INFO("received object cnt : [%d]",object_cnt);
 }
 //TODO Callback_Image
 void machine_info_Callback_Image(const sensor_msgs::Image& msg)
 {
+  camera_on=true;
   //detectedImage=msg;
   cv_bridge::CvImagePtr cv_ptr;
   cv_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
   detectionImage=cv_ptr->image;
-  cv::imshow("window",detectionImage);
-  cv::waitKey(1);
-
 }
 //TODO Callback BoundingBoxes
 void machine_info_Callback_BoundingBoxes(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 {
-	boundingboxes=msg;
-	cout<<"**************bounding boxes***********"<<endl<<endl;
-	for(int i=0;i<object_cnt;i++){
-		cout<<"("<<i+1<<")"<<endl;
-		cout<<"Bouding Boxes (header):" << boundingboxes->header <<endl;
-    	cout<<"Bouding Boxes (image_header):" << boundingboxes->image_header <<endl;
-    	cout<<"Bouding Boxes (Class):" << boundingboxes->bounding_boxes[i].Class <<endl;
-    	cout<<"Bouding Boxes (xmin):" << boundingboxes->bounding_boxes[i].xmin <<endl;
-    	cout<<"Bouding Boxes (xmax):" << boundingboxes->bounding_boxes[i].xmax <<endl;
-    	cout<<"Bouding Boxes (ymin):" << boundingboxes->bounding_boxes[i].ymin <<endl;
-   	 	cout<<"Bouding Boxes (ymax):" << boundingboxes->bounding_boxes[i].ymax <<endl<<endl;
-	}
-
+        boundingboxes=msg;
+/*
+        cout<<"**************bounding boxes***********"<<endl<<endl;
+        for(int i=0;i<boundingboxes->bounding_boxes.size();i++){
+        cout<<"("<<i+1<<")"<<endl;
+        cout<<"Bouding Boxes (header):" << boundingboxes->header <<endl;
+        cout<<"Bouding Boxes (image_header):" << boundingboxes->image_header <<endl;
+        cout<<"Bouding Boxes (Class):" << boundingboxes->bounding_boxes[i].Class <<endl;
+        cout<<"Bouding Boxes (xmin):" << boundingboxes->bounding_boxes[i].xmin <<endl;
+        cout<<"Bouding Boxes (xmax):" << boundingboxes->bounding_boxes[i].xmax <<endl;
+        cout<<"Bouding Boxes (ymin):" << boundingboxes->bounding_boxes[i].ymin <<endl;
+        cout<<"Bouding Boxes (ymax):" << boundingboxes->bounding_boxes[i].ymax <<endl<<endl;
+        }
+*/
 }
 //TODO main
 /**
@@ -251,41 +272,41 @@ void machine_info_Callback_BoundingBoxes(const darknet_ros_msgs::BoundingBoxes::
 int main(int argc, char* argv[])
 {
     DWORD uDelay = 0;
-	DT_STATUS ret = DT_STATUS_OK;
+        DT_STATUS ret = DT_STATUS_OK;
 #ifdef _DEBUG
     system_size_check();
 #endif /* _DEBUG */
 
     // Initizting System Base
-	DT_CHECK_POINT("Initiating Application Base.");
-	ret = InitiateApplication();
-	if (ret != DT_STATUS_OK)
-	{
-		DT_CHECK_POINT("Failed to initiate application(%d).", ret);
-		/* //[[ comment___BEGIN -- tmep.nohgan
-		g_main_loop_quit(main_loop);
+        DT_CHECK_POINT("Initiating Application Base.");
+        ret = InitiateApplication();
+        if (ret != DT_STATUS_OK)
+        {
+                DT_CHECK_POINT("Failed to initiate application(%d).", ret);
+                /* //[[ comment___BEGIN -- tmep.nohgan
+                g_main_loop_quit(main_loop);
         g_main_loop_unref(main_loop);
-		main_loop = NULL;
-		//*/ //]] comment___END -- tmep.nohgan
-		TerminateApplication();
-		return ret;
-	}
+                main_loop = NULL;
+                //*/ //]] comment___END -- tmep.nohgan
+                TerminateApplication();
+                return ret;
+        }
     DT_CHECK_POINT("Initiating Application Base was succeeded.");
 
-	// Init signal catch
-	DT_CHECK_POINT("Starting Signal Handler.");
-	ret = SignalHandler::GetInstance()->StartHandler(NULL);
-	if (ret != DT_STATUS_OK)
-	{
-		DT_CHECK_POINT("Failed to start signal handler(%d).", ret);
-		/* //[[ comment___BEGIN -- tmep.nohgan
-		g_main_loop_quit(main_loop);
+        // Init signal catch
+        DT_CHECK_POINT("Starting Signal Handler.");
+        ret = SignalHandler::GetInstance()->StartHandler(NULL);
+        if (ret != DT_STATUS_OK)
+        {
+                DT_CHECK_POINT("Failed to start signal handler(%d).", ret);
+                /* //[[ comment___BEGIN -- tmep.nohgan
+                g_main_loop_quit(main_loop);
         g_main_loop_unref(main_loop);
-		main_loop = NULL;
-		//*/ //]] comment___END -- tmep.nohgan
-		TerminateApplication();
-		return ret;
-	}
+                main_loop = NULL;
+                //*/ //]] comment___END -- tmep.nohgan
+                TerminateApplication();
+                return ret;
+        }
 
     ///< ROS initialization function.
     ros::init(argc, argv, THIS_NODE_NAME);
@@ -293,68 +314,68 @@ int main(int argc, char* argv[])
     ///< NodeHandle is the main access point to communications with the ROS system
     ros::NodeHandle hThidNode;
 
-    ///< how you tell ROS that you want to receive messages on a given topic.  
+    ///< how you tell ROS that you want to receive messages on a given topic.
     ros::Subscriber FoundObjectSubscriber = hThidNode.subscribe(FOUNDOBJECT_TOPIC_NAME, 1000, machine_info_Callback_FoundObject);
-	ros::Subscriber BoundingBoxSubscriber = hThidNode.subscribe(BOUNDINGBOX_TOPIC_NAME, 1000, machine_info_Callback_BoundingBoxes);
-	ros::Subscriber ImageSubscriber = hThidNode.subscribe(DETECTIONIMAGE_TOPIC_NAME, 1000, machine_info_Callback_Image);
+        ros::Subscriber BoundingBoxSubscriber = hThidNode.subscribe(BOUNDINGBOX_TOPIC_NAME, 1000, machine_info_Callback_BoundingBoxes);
+        ros::Subscriber ImageSubscriber = hThidNode.subscribe(DETECTIONIMAGE_TOPIC_NAME, 1000, machine_info_Callback_Image);
     //ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
     ///< will enter a loop, pumping callbacks.
     ros::spin();
 
-	// Init glib mainloop
-	/* //[[ comment___BEGIN -- tmep.nohgan
-	GMainLoop *main_loop = NULL;
+        // Init glib mainloop
+        /* //[[ comment___BEGIN -- tmep.nohgan
+        GMainLoop *main_loop = NULL;
     printf("starting\n");
-	main_loop = g_main_loop_new(NULL, FALSE);
-	if (main_loop == NULL)
-	{
-		DT_CHECK_POINT("Failed to create main event loop.");
-		return DT_STATUS_EVENT_LOOP_INVALID;
-	}
-	//*/ //]] comment___END -- tmep.nohgan
+        main_loop = g_main_loop_new(NULL, FALSE);
+        if (main_loop == NULL)
+        {
+                DT_CHECK_POINT("Failed to create main event loop.");
+                return DT_STATUS_EVENT_LOOP_INVALID;
+        }
+        //*/ //]] comment___END -- tmep.nohgan
 
-	
 
-	// Running Main Event Loop
-	/* //[[ comment___BEGIN -- tmep.nohgan
-	DT_CHECK_POINT("Running Main Event Loop.");
-	if (main_loop)
-	{
-		g_main_loop_run(main_loop);
-		g_main_loop_unref(main_loop);
-		main_loop = NULL;
-	}	
-	//*/ //]] comment___END -- tmep.nohgan
+
+        // Running Main Event Loop
+        /* //[[ comment___BEGIN -- tmep.nohgan
+        DT_CHECK_POINT("Running Main Event Loop.");
+        if (main_loop)
+        {
+                g_main_loop_run(main_loop);
+                g_main_loop_unref(main_loop);
+                main_loop = NULL;
+        }
+        //*/ //]] comment___END -- tmep.nohgan
     DT_CHECK_POINT("Server Will be closing.");
 
-	// Wait for Signal Catcher Thread's terminating.
-	DT_CHECK_POINT("Stopping Signal Handler.");
-	ret = SignalHandler::GetInstance()->StopHandler();
-	if (ret != DT_STATUS_OK)
-	{
-		DT_CHECK_POINT("Failed to stopping signal handler(%d).", ret);
-		TerminateApplication();
-		return ret;
-	}
+        // Wait for Signal Catcher Thread's terminating.
+        DT_CHECK_POINT("Stopping Signal Handler.");
+        ret = SignalHandler::GetInstance()->StopHandler();
+        if (ret != DT_STATUS_OK)
+        {
+                DT_CHECK_POINT("Failed to stopping signal handler(%d).", ret);
+                TerminateApplication();
+                return ret;
+        }
 
-	DT_CHECK_POINT("Terminating Application Base.");
-	ret = TerminateApplication();
-	if (ret != DT_STATUS_OK)
-	{
-		DT_CHECK_POINT("Failed to terminating network environment(%d).", ret);
+        DT_CHECK_POINT("Terminating Application Base.");
+        ret = TerminateApplication();
+        if (ret != DT_STATUS_OK)
+        {
+                DT_CHECK_POINT("Failed to terminating network environment(%d).", ret);
         return ret;
-	}
+        }
 
-	DT_CHECK_POINT("Waiting %d seconds for network server's terminating gracefully.", 
-	    MAIN_SERVER_STOP_DELAY_TIME);
-	while (uDelay < MAIN_SERVER_STOP_DELAY_TIME)
-	{
+        DT_CHECK_POINT("Waiting %d seconds for network server's terminating gracefully.",
+            MAIN_SERVER_STOP_DELAY_TIME);
+        while (uDelay < MAIN_SERVER_STOP_DELAY_TIME)
+        {
         DogTrack_SleepMs(1000);
         ++uDelay;
         DT_CHECK_POINT("Elapsed delay time : %u seconds", uDelay);
-	}
-    
+        }
+
     DT_CHECK_POINT("process will be exit.");
     return ret;
 }

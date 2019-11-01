@@ -413,7 +413,48 @@ int CSocketThread::ParsePacket(BYTE* pBuffer, int buffer_size, DtDataWrap_t** pp
 		}
 		pInfoNextStore = pInfoItem;
 	}
+	///< image cols
+	memcpy(uint_bytes.buffer, pBuffer + data_read_pos, sizeof(UINT));
+	(*ppInfoWrap)->cols = ntohl(uint_bytes.detail.value);
+	data_read_pos += sizeof(UINT);
+	IS_VALID_LENGTH(full_length, data_read_pos, invalid_data_packet);
+	if (invalid_data_packet)
+	{
+		FreeInfoDataWrap(*ppInfoWrap);
+		return 1;
+	}
+	///< image rows
+	memcpy(uint_bytes.buffer, pBuffer + data_read_pos, sizeof(UINT));
+	(*ppInfoWrap)->rows = ntohl(uint_bytes.detail.value);
+	data_read_pos += sizeof(UINT);
+	IS_VALID_LENGTH(full_length, data_read_pos, invalid_data_packet);
+	if (invalid_data_packet)
+	{
+		FreeInfoDataWrap(*ppInfoWrap);
+		return 1;
+	}
+	
+	///< image 
+	if ((*ppInfoWrap)->rows > 0) {
+		BYTE* image_bytes = (BYTE*)malloc((*ppInfoWrap)->cols * (*ppInfoWrap)->rows * 3);
+		char buf[100];
+		sprintf_s(buf, sizeof(buf), "ParsePacket>>>>>>>image.cols: %d, image.rows: %d\n", (*ppInfoWrap)->cols, (*ppInfoWrap)->rows);
+		OutputDebugString(buf);
+		memcpy(image_bytes, pBuffer + data_read_pos+1, (*ppInfoWrap)->cols* (*ppInfoWrap)->rows * 3);
+		(*ppInfoWrap)->byte = image_bytes;
+		//BYTE tmpbytes[480 * 640 * 3];
+		data_read_pos += (*ppInfoWrap)->cols * (*ppInfoWrap)->rows * 3;
 
+		OutputDebugString("\nimage complete!\n");
+
+		IS_VALID_LENGTH(full_length, data_read_pos, invalid_data_packet);
+		if (invalid_data_packet)
+		{
+			FreeInfoDataWrap(*ppInfoWrap);
+			return 1;
+		}
+	}
+	
 	return 0;
 }
 
@@ -552,6 +593,7 @@ UINT CSocketThread::Worker(LPVOID pData)
 	{
 		nInvalid = 0;
 		nGotoTop = 0;
+        ret = 0;
 		///< Make one packet
 		ret = pParent->MakeOnePacket(&pSendBuffer, send_buffer_size);
 		if (ret != 0)
@@ -607,8 +649,8 @@ UINT CSocketThread::Worker(LPVOID pData)
 				OutputDebugString("Receive() return 0.\n");
 				pParent->m_bLoop = false;
 				nInvalid = 1;
-				nGotoTop = 1;
-				break;
+                nGotoTop = 1;
+                break;;
 			}
 
 			ret = pParent->MergePacket(&pBuffer, buffer_size, szRecvBuffer, cbReceived);
@@ -617,7 +659,15 @@ UINT CSocketThread::Worker(LPVOID pData)
 				if ((pBuffer[DT_PACKET_STX_POS] == DT_PACKET_STX) &&
 					(pBuffer[buffer_size - 1] == DT_PACKET_ETX))
 				{
-					nReceiveOk = 1;
+                    UINT_TO_BYTES uint_bytes;
+                    int full_length = 0;
+                    memset(uint_bytes.buffer, 0x00, sizeof(uint_bytes.buffer));
+                    memcpy(uint_bytes.buffer, pBuffer + DT_PACKET_FULL_LENGTH_POS, sizeof(UINT));
+                    full_length = ntohl(uint_bytes.detail.value);
+                    if (full_length == buffer_size)
+                    {
+                        nReceiveOk = 1;
+                    }
 				}
 			}
 			else if (ret == 1)
@@ -650,28 +700,39 @@ UINT CSocketThread::Worker(LPVOID pData)
 			///< TODO  SendMessage UI
 			//pParent->PostThreadMessage(DT_RECEIVED_MESSAGE, 0, (LPARAM)pInfoData);
 			//OutputDebugString("The message from server was received. So this message will being passed to UI thread.\n");
-			PostMessage(hWnd, DT_SEND_RECEIVED_MESSAGE_TO_UI, 0, (LPARAM)pInfoData);  // refer to DT_RECEIVED_MESSAGE
-			char buf[100];
-			sprintf_s(buf, sizeof(buf), "[received data] steering: %lf, speed: %d, detected_count: %d\n", pInfoData->steering_angle, pInfoData->speed, pInfoData->detected_count);
+			SendMessage(hWnd, DT_SEND_RECEIVED_MESSAGE_TO_UI, 0, (LPARAM)pInfoData);  // refer to DT_RECEIVED_MESSAGE
+			char buf[200];
+			sprintf_s(buf, sizeof(buf), "[received data] steering: %lf, speed: %d, detected_count: %d, image.cols: %d, image.rows: %d\n", 
+				pInfoData->steering_angle, pInfoData->speed, pInfoData->detected_count,pInfoData->cols,pInfoData->rows);
 			char detectedinfo[1000];
-			DtDetectedArea_t* cur=pInfoData->detected_info;
-			int count = 1;
-			while(cur){
-				sprintf_s(detectedinfo, sizeof(detectedinfo), "%d) x: %d, y: %d, w: %d, h: %d , cls: %d\n",count,cur->x,cur->y,cur->w,cur->h,cur->cls);
+			DtDetectedArea_t* cur = pInfoData->detected_info;
+			OutputDebugString(buf);
+			/*int count = 1;
+			while (cur) {
+				sprintf_s(detectedinfo, sizeof(detectedinfo), "%d) x: %d, y: %d, w: %d, h: %d , cls: %d\n", count, cur->x, cur->y, cur->w, cur->h, cur->cls);
 				cur = cur->pNext;
 			}
-			OutputDebugString(buf);
-			OutputDebugString(detectedinfo);
+			
+			OutputDebugString(detectedinfo);*/
+			
+			
+			/*if (pInfoData->rows >0) {
+				Mat temp = Mat(pInfoData->rows, pInfoData->cols, CV_8UC3);
+				temp.data = pInfoData->byte;
+				imshow("window", temp);
+			}*/
+			
 			pInfoData = NULL;
 			DT_FREE(pBuffer);
 			nInvalid = 0;
 		}
 		else
 		{
+            OutputDebugString("parsing error");
 			pInfoData = NULL;
 			DT_FREE(pBuffer);
-			pParent->m_bLoop = false;
-			nInvalid = 1;
+			/*pParent->m_bLoop = false;
+			nInvalid = 1;*/
 			continue;
 		}
 	} // end while (m_bLoop)

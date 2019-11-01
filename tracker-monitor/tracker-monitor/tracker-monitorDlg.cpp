@@ -125,7 +125,7 @@ BOOL CtrackermonitorDlg::OnInitDialog()
     m_btnCommStart.EnableWindow(TRUE);
     m_btnCommStop.EnableWindow(FALSE);
 
-    m_serverAddress.SetAddress(192, 168, 101, 32);
+    m_serverAddress.SetAddress(192, 168, 153, 99);
     
     m_ClientSocket.SetWnd(this->m_hWnd);
 

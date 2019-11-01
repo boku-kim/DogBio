@@ -1,8 +1,8 @@
 /**
 ****************************************************************************************************
 * @file MonitorSvr.h
-* @brief linux server for 
-* @author 
+* @brief linux server for
+* @author
 * @date Created Oct 01, 2019
 * @see Coding standard guideline
 ****************************************************************************************************
@@ -20,8 +20,10 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
-#define DT_MONITOR_SVR_SOCKET_PORT              77777
+#define DT_MONITOR_SVR_SOCKET_PORT              33333
 #define DT_MONITOR_SVR_SOCKET_IN_QUEUE_CNT      5
 #define DT_MONITOR_SVR_OK_PACKET                "ok"
 #define DT_MONITOR_SVR_RECV_BUFF_LENGTH         1024
@@ -51,7 +53,7 @@
    { \
       failed = 1; \
       break; \
-   } 
+   }
 
 ///<---------------------------------------------------------
 typedef struct DtDetectedArea
@@ -67,9 +69,12 @@ typedef struct DtDetectedArea
 typedef struct DtSendDataWrap
 {
     float steering_angle;
-    DWORD speed;    
-    DWORD detected_count;    
+    DWORD speed;
+    DWORD detected_count;
     DtDetectedArea_t* detected_info;
+   	BYTE* bytes;
+	DWORD cols;
+	DWORD rows;
 } DtSendDataWrap_t;
 
 ///<---------------------------------------------------------
@@ -93,7 +98,7 @@ union DT_PACKET_FULL_FORMAT
 {
     struct PACKET_DETAIL
     {
-        BYTE  packet_start;		// 0    
+        BYTE  packet_start;		// 0
         DWORD full_length;		// 1 - 4
                                 // variable data_area   // variable
                                 // BYTE packet_stop
@@ -140,7 +145,7 @@ __attribute__((packed));
 
 ///<---------------------------------------------------------
 #pragma pack(push, 1)
-union uint_and_float 
+union uint_and_float
 {
     DWORD uValue;
     float fValue;
@@ -158,42 +163,42 @@ typedef std::vector<DtSendDataWrap_t*>SendDataQueueType;
 class MonitorServer
 {
 private:
-	MonitorServer();
-    
+        MonitorServer();
+
 public:
-	virtual ~MonitorServer();
+        virtual ~MonitorServer();
 
-	static MonitorServer* GetInstance();
-	static void ReleaseInstance();
+        static MonitorServer* GetInstance();
+        static void ReleaseInstance();
 
-	DT_STATUS StartServer();
-	DT_STATUS StopServer();
+        DT_STATUS StartServer();
+        DT_STATUS StopServer();
     DT_STATUS AddItem(DtSendDataWrap_t* pItem);
     DT_STATUS GetItem(DtSendDataWrap_t** pItem);
     void ClearAll();
 
 private:
-    
-        
+
+
 public:
     int m_server_fd; // socket descriptor
     int m_client_fd;
     /*
-    sockaddr Íµ¨Ï°∞Ï≤¥ : ÏÜåÏºìÏùò Ï£ºÏÜåÎ•º Îã¥Îäî Í∏∞Î≥∏ Íµ¨Ï°∞Ï≤¥
-    sockaddr_in Íµ¨Ï°∞Ï≤¥ : sockaddr Íµ¨Ï°∞Ï≤¥ÏóêÏÑú AF_INETÏù∏ Í≤ΩÏö∞Ïóê ÏÇ¨Ïö©
+    sockaddr ±∏¡∂√º : º“ƒœ¿« ¡÷º“∏¶ ¥„¥¬ ±‚∫ª ±∏¡∂√º
+    sockaddr_in ±∏¡∂√º : sockaddr ±∏¡∂√ºø°º≠ AF_INET¿Œ ∞ÊøÏø° ªÁøÎ
     */
-    struct sockaddr_in m_server_addr; 
-    
+    struct sockaddr_in m_server_addr;
+
 private:
-    
-	static MonitorServer* m_pInstance;
-    
+
+        static MonitorServer* m_pInstance;
+
     pthread_t m_tid;
-    
+
     pthread_mutex_t m_mutex_queue;
 public:
     SendDataQueueType m_queue;
-    
+
 };
 
 

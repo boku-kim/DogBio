@@ -1,8 +1,9 @@
+
 /**
 ****************************************************************************************************
 * @file SignalHandler.cpp
 * @brief General interface for linux signal
-* @author 
+* @author
 * @date Created Oct 01, 2019
 * @see Coding standard guideline
 ****************************************************************************************************
@@ -16,6 +17,8 @@
 
 #include "MonitorSvr.h"
 #include "Utils.h"
+
+using namespace std;
 
 static DWORD s_loop = 1;
 static DWORD s_internal_loop = 1;
@@ -31,19 +34,19 @@ void FreeSendDataWrap(DtSendDataWrap_t* pWrap);
 */
 //TODO ClearAll
 void MonitorServer::ClearAll(){
-	
- 	pthread_mutex_lock(&m_mutex_queue);
+
+        pthread_mutex_lock(&m_mutex_queue);
     while (1)
-    {   
-		DtSendDataWrap_t* ppItem = NULL;
-   		if (m_queue.size() > 0)
-    	{
-        	ppItem = m_queue[m_queue.size() - 1];
-        	m_queue.pop_back();
-   		}
+    {
+                DtSendDataWrap_t* ppItem = NULL;
+                if (m_queue.size() > 0)
+        {
+                ppItem = m_queue[m_queue.size() - 1];
+                m_queue.pop_back();
+                }
 
         //GetItem(&pItem);
-        
+
         if (ppItem == NULL)
         {
             break;
@@ -51,8 +54,8 @@ void MonitorServer::ClearAll(){
         FreeSendDataWrap(ppItem);
     }
     m_queue.clear();
-	DT_CHECK_POINT("^^^^^^^^^^^^^^^^^^^^queue size: %d", m_queue.size());
-	pthread_mutex_unlock(&m_mutex_queue);
+        DT_CHECK_POINT("^^^^^^^^^^^^^^^^^^^^queue size: %d", m_queue.size());
+        pthread_mutex_unlock(&m_mutex_queue);
 }
 
 //TODO redady_for_reading
@@ -90,19 +93,19 @@ DT_STATUS accept_connection(int socket_fd, int& client_fd, DWORD msec)
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = 0;
     char temp[64] = { 0 };
-    
+
     if (ready_for_reading(socket_fd, msec) != DT_STATUS_OK)
     {
        // DT_CHECK_POINT("time out after %d msec", msec);
         return DT_STATUS_FAIL;
     }
-    client_addr_len = sizeof(client_addr); 
+    client_addr_len = sizeof(client_addr);
     memset(&client_addr, 0x00, client_addr_len);
     client_fd = accept(socket_fd,
                        (struct sockaddr *)&client_addr,
                        &client_addr_len );
     DT_CHECK_POINT("client_fd: %d", client_fd);
-                   
+
     if (client_fd == -1)
     {
         DT_CHECK_POINT("accept() error[%d]", errno);
@@ -111,7 +114,7 @@ DT_STATUS accept_connection(int socket_fd, int& client_fd, DWORD msec)
 
     inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
     DT_CHECK_POINT("[%s] client connected..", temp);
-        
+
     return DT_STATUS_OK;
 }
 
@@ -148,7 +151,7 @@ void FreeSendDataWrap(DtSendDataWrap_t* pWrap)
 {
     DtDetectedArea_t* pTemp = NULL;
     DtDetectedArea_t* pTarget = NULL;
-    
+
     if (pWrap)
     {
         pTarget = pWrap->detected_info;
@@ -159,6 +162,9 @@ void FreeSendDataWrap(DtSendDataWrap_t* pWrap)
             pTarget = pTemp;
         }
         DT_FREE(pWrap);
+		if(pWrap->bytes!=NULL){
+			//DT_FREE(pWrap->bytes);
+		}
     }
 }
 
@@ -198,9 +204,12 @@ DT_STATUS MakeOnePacket(BYTE **pSendBuffer, int& send_size)
             send_size = sizeof(float); // steering angle
             send_size += (sizeof(DWORD) * 2); // speed, detected_count
             send_size += ((sizeof(int) * DT_SEND_PACKET_AREA_INFO_COUNT) * pItem->detected_count); // detected info total count
+			send_size += (sizeof(DWORD) * 2); // cols,rows
+			send_size += pItem->cols * pItem->rows * 3;//cols*rows*channels
             data_size = send_size;
-            DT_CHECK_POINT("data_size:%d, detected count:%d, steer angle:%f, speed:%d", 
+            DT_CHECK_POINT("data_size:%d, detected count:%d, steer angle:%f, speed:%d",
                 data_size, pItem->detected_count, pItem->steering_angle, pItem->speed);
+            DT_CHECK_POINT("cols:%d, rows:%d", pItem->cols, pItem->rows);
             send_size += DT_PACKET_STX_SIZE + DT_PACKET_FULL_LENGTH_SIZE + DT_PACKET_ETX_SIZE;
             *pSendBuffer = (BYTE*)malloc(send_size);
             if (*pSendBuffer)
@@ -210,7 +219,6 @@ DT_STATUS MakeOnePacket(BYTE **pSendBuffer, int& send_size)
 
                 dword_bytes.detail.value = htonl(send_size);
                 memcpy((*pSendBuffer) + DT_PACKET_FULL_LENGTH_POS, dword_bytes.buffer, sizeof(dword_bytes.buffer));
-
                 pData = (BYTE*)malloc(data_size);
                 if (pData)
                 {
@@ -233,8 +241,9 @@ DT_STATUS MakeOnePacket(BYTE **pSendBuffer, int& send_size)
 
                     detect_count = pItem->detected_count;
                     pTarget = pItem->detected_info;
+
                     while (pTarget != NULL)
-                    {                        
+                    {
                         dword_bytes.detail.value = htonl(pTarget->x);
                         memcpy(pData + data_store_pos, dword_bytes.buffer, sizeof(dword_bytes.buffer));
                         data_store_pos += sizeof(dword_bytes.buffer);
@@ -254,16 +263,40 @@ DT_STATUS MakeOnePacket(BYTE **pSendBuffer, int& send_size)
                         memcpy(pData + data_store_pos, dword_bytes.buffer, sizeof(dword_bytes.buffer));
                         data_store_pos += sizeof(dword_bytes.buffer);
                         IS_VALID_LENGTH(data_size, data_store_pos, nConvFailed);
-                        
+
                         dword_bytes.detail.value = htonl(pTarget->cls);
                         memcpy(pData + data_store_pos, dword_bytes.buffer, sizeof(dword_bytes.buffer));
                         data_store_pos += sizeof(dword_bytes.buffer);
                         IS_VALID_LENGTH(data_size, data_store_pos, nConvFailed);
-                        
+
                         pTemp = pTarget->pNext;
                         pTarget = pTemp;
                         ++convert_count;
                     } // end while (pTarget != NULL)
+					
+                    ///< image cols
+                    dword_bytes.detail.value = htonl(pItem->cols);
+                    memcpy(pData + data_store_pos, dword_bytes.buffer, sizeof(dword_bytes.buffer));
+                    data_store_pos += sizeof(dword_bytes.buffer);
+
+					///< image rows
+                    dword_bytes.detail.value = htonl(pItem->rows);
+                    memcpy(pData + data_store_pos, dword_bytes.buffer, sizeof(dword_bytes.buffer));
+                    data_store_pos += sizeof(dword_bytes.buffer);
+					
+					
+					///< image
+					if(pItem->bytes != NULL)
+                    {
+						DT_CHECK_POINT("_______________hahahahahahahahahah; total copy size:%d ",
+                            pItem->rows * pItem->cols * 3);
+						//cv::Mat temp=cv::Mat(pItem->rows,pItem->cols,CV_8UC3,pItem->bytes);
+						//cv::imshow("window",temp);
+						//cv::waitKey(1);
+						memcpy(pData + data_store_pos, pItem->bytes, pItem->rows * pItem->cols * 3);
+						data_store_pos += pItem->rows * pItem->cols * 3;
+					
+                    }
                     if (nConvFailed || (convert_count != detect_count))
                     {
                         DT_CHECK_POINT("convert error.");
@@ -276,14 +309,14 @@ DT_STATUS MakeOnePacket(BYTE **pSendBuffer, int& send_size)
                     {
                         memcpy((*pSendBuffer) + DT_PACKET_DATA_POS, pData, data_size);
                     }
-                } 
+                }
                 else
                 {
                     DT_FREE(*pSendBuffer);
                     send_size = 0;
                     ret = DT_STATUS_MEM_ERROR;
                 } // end if (pData)
-                
+
             }
             else
             {
@@ -344,9 +377,9 @@ DT_STATUS ParsePacket(BYTE* pBuffer, int buffer_size, DtFullDataWrap_t** ppDataW
         DT_CHECK_POINT("full length : %d", (*ppDataWrap)->full_length);
         if ((*ppDataWrap)->full_length == (DWORD)buffer_size)
         {
-            (*ppDataWrap)->data_size = buffer_size - 
-                                       DT_PACKET_STX_SIZE - 
-                                       DT_PACKET_FULL_LENGTH_SIZE - 
+            (*ppDataWrap)->data_size = buffer_size -
+                                       DT_PACKET_STX_SIZE -
+                                       DT_PACKET_FULL_LENGTH_SIZE -
                                        DT_PACKET_ETX_SIZE;
             if ((*ppDataWrap)->data_size > 0)
             {
@@ -396,9 +429,9 @@ DT_STATUS MergePacket(BYTE** ppTargetBinary, int& nTargetSize, BYTE* pSourceBina
     BYTE* pTemp = NULL;
     int temp_size = 0;
 
-    if ((ppTargetBinary == NULL) || 
+    if ((ppTargetBinary == NULL) ||
         (pSourceBinary == NULL) ||
-        (nTargetSize < 0) || 
+        (nTargetSize < 0) ||
         (nSourceSize <= 0))
     {
         DT_CHECK_POINT("invalid arguments.");
@@ -450,7 +483,7 @@ DT_STATUS MergePacket(BYTE** ppTargetBinary, int& nTargetSize, BYTE* pSourceBina
             ret = DT_STATUS_MEM_ERROR;
         } // end if (pTemp != NULL)
     } // end if (pBuffer == NULL)
-    
+
     return ret;
 }
 
@@ -474,11 +507,11 @@ void communicate_to_client(int socket_fd,MonitorServer* pParent)
     int nReceiveOk = 0;
 
     while (s_internal_loop)
-    {	
+    {
         DT_CHECK_POINT("Wait for the packet being sent from client.");
         ///< Receive packet
         nReceiveOk = 0;
- 		
+
         while (!nReceiveOk)
         {
             read_size = read(socket_fd, ReceiveBuff, sizeof(ReceiveBuff));
@@ -521,7 +554,7 @@ void communicate_to_client(int socket_fd,MonitorServer* pParent)
 
         ///< parsing packet
         ret = ParsePacket(pBuffer, buffer_size, &pDataWrap);
-		
+
         if (ret != DT_STATUS_OK)
         {
             DT_CHECK_POINT("ParsePacket was failed.");
@@ -540,17 +573,25 @@ void communicate_to_client(int socket_fd,MonitorServer* pParent)
 
         ///< NOTE : if you wanna handle data, you have to do just here.
         FreeDataWrap(pDataWrap);
+        
+        do
+        {
+            ret = MakeOnePacket(&pSendBuffer, send_size);
+            DogTrack_SleepMs(100);
+        } while (ret == DT_STATUS_QUEUE_GET_ITEM_FAILED && s_internal_loop);
 
-        ret = MakeOnePacket(&pSendBuffer, send_size);
+        int write_pos = 0;
         if (ret == DT_STATUS_OK)
         {
             DT_CHECK_POINT("MakeOnePacket was succeeded.");
-            
+
             int nWritePacketFailed = 0;
-            ret_socket = write(socket_fd, pSendBuffer, send_size);
+            ret_socket = write(socket_fd, pSendBuffer + write_pos, send_size);
             if (ret_socket == send_size)
             {
-                DT_CHECK_POINT("Written data size was succeeded[%d,%d].", ret_socket, send_size);            
+                DT_CHECK_POINT("Written data size was succeeded[%d,%d].", ret_socket, send_size);
+                DT_FREE(pSendBuffer);
+                send_size = 0;
             }
             else if (ret_socket == -1)
             {
@@ -560,32 +601,34 @@ void communicate_to_client(int socket_fd,MonitorServer* pParent)
             else if (ret_socket != send_size) // this is NOT error, but return for application purpose.
             {
                 DT_CHECK_POINT("Written data size was invalid[%d,%d].", ret_socket, send_size);
-                nWritePacketFailed = 1;
+                //nWritePacketFailed = 1;
+                write_pos = send_size - ret_socket;
             }
             else
             {
                 DT_CHECK_POINT("Unknown error in writing[%d].", ret_socket);
                 nWritePacketFailed = 1;
             }
-            DT_FREE(pSendBuffer);
-            send_size = 0;
+            
 
             if (nWritePacketFailed == 1)
             {
+                DT_FREE(pSendBuffer);
+                send_size = 0;
                 return;
             }
         } // end if (ret == DT_STATUS_OK)
         else
         {
-            DT_CHECK_POINT("MakeOnePacket was failed.");
+            DT_CHECK_POINT("MakeOnePacket was failed[%d].", ret);
             DT_FREE(pSendBuffer);
             send_size = 0;
             return; ///< TODO : need to remove the comment.
         }
-		pParent->ClearAll();
-        DogTrack_SleepMs(1000);
+		////< pParent->ClearAll();
+        DogTrack_SleepMs(10);
     } // end while (s_internal_loop)
-    
+
 }
 
 /**
@@ -596,15 +639,15 @@ void communicate_to_client(int socket_fd,MonitorServer* pParent)
 //TODO dt_server_handler
 void* dt_server_handler(void* data)
 {
-    MonitorServer* pParent = NULL;    
+    MonitorServer* pParent = NULL;
     DT_STATUS ret = DT_STATUS_OK;
-    
-	if (data == NULL)
-	{
-		return NULL;
-	}
+
+        if (data == NULL)
+        {
+                return NULL;
+        }
     pParent = (MonitorServer*)data;
- 
+
     while (s_loop)
     {
         DT_CHECK_POINT("receiving data");
@@ -619,15 +662,17 @@ void* dt_server_handler(void* data)
             DT_CHECK_POINT("invalid client socket descriptor[%d].", pParent->m_client_fd);
             continue;
         }
+        pParent->ClearAll();
         communicate_to_client(pParent->m_client_fd,pParent);
+        DT_CHECK_POINT("Server : we will disconnect connection to client.");
         if (pParent->m_client_fd > 0)
         {
             close(pParent->m_client_fd);
         }
-        DT_CHECK_POINT("Server : client closed.");
+        
     }
 
-	return NULL;
+        return NULL;
 }
 
 MonitorServer* MonitorServer::m_pInstance = NULL;
@@ -639,11 +684,11 @@ MonitorServer* MonitorServer::m_pInstance = NULL;
 */
 MonitorServer* MonitorServer::GetInstance()
 {
-	if (m_pInstance == NULL)
-	{
-		m_pInstance = new MonitorServer();
-	}
-	return m_pInstance;
+        if (m_pInstance == NULL)
+        {
+                m_pInstance = new MonitorServer();
+        }
+        return m_pInstance;
 }
 
 /**
@@ -653,15 +698,15 @@ MonitorServer* MonitorServer::GetInstance()
 */
 void MonitorServer::ReleaseInstance()
 {
-	if (m_pInstance)
-	{
-		delete m_pInstance;
-		m_pInstance = NULL;
-	}
+        if (m_pInstance)
+        {
+                delete m_pInstance;
+                m_pInstance = NULL;
+        }
 }
 
 #if defined(_OS_WINDOWS)
-#elif defined(_OS_LINUX) 
+#elif defined(_OS_LINUX)
 
 /**
 ****************************************************************************************************
@@ -705,9 +750,9 @@ DT_STATUS MonitorServer::StartServer()
     int socket(domain,type, protocol);
     domain : integer, communication domain e.g., AF_INET(IPv4 protocol),AF_INET6(IPv6 protocol)
     type : communication type. SOCK_STREAM(TCP), SOCK_DGRAM(UDP)
-    protocol : Protocol value for IP, which is 0. This si the same number which appears on protocol field in th IP header of a packet. 
+    protocol : Protocol value for IP, which is 0. This si the same number which appears on protocol field in th IP header of a packet.
     */
-    m_server_fd = socket(AF_INET, SOCK_STREAM, 0); 
+    m_server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_server_fd == -1)
     {
         DT_CHECK_POINT("creating socket was failed[%d].", errno);
@@ -720,9 +765,9 @@ DT_STATUS MonitorServer::StartServer()
         DT_CHECK_POINT("fcntl() failed[%d]", errno);
         return DT_STATUS_SOCKET_FCNTL_FAILED;
     }
-        
+
     m_server_addr.sin_family = AF_INET;
-    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY : ??œe²?i?? IP i￡¼i†Œe￥? ?????™?œ¼e¡? i°¾i????œ ?????…
+    m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // INADDR_ANY :
     m_server_addr.sin_port = htons(DT_MONITOR_SVR_SOCKET_PORT);
 
     /*
@@ -733,8 +778,8 @@ DT_STATUS MonitorServer::StartServer()
         DT_CHECK_POINT("Can't bind local address[%d].", errno);
         return DT_STATUS_SOCKET_BIND_FAILED;
     }
-    
-    if(listen(m_server_fd, DT_MONITOR_SVR_SOCKET_IN_QUEUE_CNT) < 0) 
+
+    if(listen(m_server_fd, DT_MONITOR_SVR_SOCKET_IN_QUEUE_CNT) < 0)
     {
         DT_CHECK_POINT("Can't listening connect[%d].", errno);
         return DT_STATUS_SOCKET_LISTEN_FAILED;
@@ -745,7 +790,7 @@ DT_STATUS MonitorServer::StartServer()
     {
         return DT_STATUS_FAIL;
     }
-	return DT_STATUS_OK;
+        return DT_STATUS_OK;
 }
 
 /**
@@ -755,7 +800,7 @@ DT_STATUS MonitorServer::StartServer()
 */
 DT_STATUS MonitorServer::StopServer()
 {
-	s_loop = 0;
+        s_loop = 0;
     s_internal_loop = 0;
 
     if (m_client_fd > 0)
@@ -783,10 +828,10 @@ DT_STATUS MonitorServer::StopServer()
     DT_CHECK_POINT("Stop Monitor Server");
     if (m_tid)
     {
-        pthread_join(m_tid, NULL); 
+        pthread_join(m_tid, NULL);
     }
-    
-	return DT_STATUS_OK;
+
+        return DT_STATUS_OK;
 }
 
 //TODO AddItem
@@ -811,8 +856,8 @@ DT_STATUS MonitorServer::AddItem(DtSendDataWrap_t* pItem)
         m_queue.push_back(pItem);
     }
 
-    pthread_mutex_unlock(&m_mutex_queue); 
-    
+    pthread_mutex_unlock(&m_mutex_queue);
+
     return ret;
 }
 //TODO GetItem
@@ -820,7 +865,7 @@ DT_STATUS MonitorServer::GetItem(DtSendDataWrap_t** ppItem)
 {
     DT_STATUS ret = DT_STATUS_OK;
 
-    pthread_mutex_lock(&m_mutex_queue); 
+    pthread_mutex_lock(&m_mutex_queue);
 
     *ppItem = NULL;
     if (m_queue.size() > 0)
@@ -829,8 +874,8 @@ DT_STATUS MonitorServer::GetItem(DtSendDataWrap_t** ppItem)
         m_queue.pop_back();
     }
 
-    pthread_mutex_unlock(&m_mutex_queue); 
-    
+    pthread_mutex_unlock(&m_mutex_queue);
+
     return ret;
 }
 

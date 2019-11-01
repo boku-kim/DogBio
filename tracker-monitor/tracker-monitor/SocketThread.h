@@ -36,9 +36,9 @@
 
 typedef enum SocketStatus
 {
-    SOCKET_STATUS_NOT_CONNECTED,
-    SOCKET_STATUS_CONNECTED,
-    SOCKET_STATUS_MAX
+	SOCKET_STATUS_NOT_CONNECTED,
+	SOCKET_STATUS_CONNECTED,
+	SOCKET_STATUS_MAX
 } eSocketStatus;
 
 /*
@@ -57,37 +57,40 @@ data area
 
 typedef struct DtDetectedArea
 {
-    int x;
-    int y;
-    int w;
-    int h;
-    int cls;
-    struct DtDetectedArea* pNext;
+	int x;
+	int y;
+	int w;
+	int h;
+	int cls;
+	struct DtDetectedArea* pNext;
 } DtDetectedArea_t;
 
 typedef struct DtDataWrap
 {
-    float steering_angle;
-    DWORD speed;
-    DWORD detected_count;
-    DtDetectedArea_t* detected_info;
+	float steering_angle;
+	DWORD speed;
+	DWORD detected_count;
+	DtDetectedArea_t* detected_info;
+	DWORD cols;
+	DWORD rows;
+	BYTE* byte; //이미지 정보를 byte로 받아옴
 } DtDataWrap_t;
 
 typedef struct DtFullDataWrap
 {
-    UINT full_length;   ///< packet full length(stx ~ etx)
-    UINT data_size;     ///< packet data size
-    BYTE* pData;        ///< packet data (variable size)
+	UINT full_length;   ///< packet full length(stx ~ etx)
+	UINT data_size;     ///< packet data size
+	BYTE* pData;        ///< packet data (variable size)
 } DtFullDataWrap_t;
 
 #pragma pack(push, 1)
 union UINT_TO_BYTES
 {
-    struct DETAIL
-    {
-        UINT value;
-    } detail;
-    BYTE buffer[4];
+	struct DETAIL
+	{
+		UINT value;
+	} detail;
+	BYTE buffer[4];
 };
 #pragma pack(pop)
 
@@ -99,27 +102,27 @@ union UINT_TO_BYTES
 #pragma pack(push, 1)
 union WORD_TO_BYTES
 {
-    struct DETAIL
-    {
-        WORD value;
-    } detail;
-    BYTE buffer[2];
+	struct DETAIL
+	{
+		WORD value;
+	} detail;
+	BYTE buffer[2];
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 union uint_and_float
 {
-    DWORD uValue;
-    float fValue;
+	DWORD uValue;
+	float fValue;
 };
 #pragma pack(pop)
 
 typedef struct stPassData
 {
-    SOCKET hSocket;
-    HWND hWnd;
-    CWinThread *pThread;
+	SOCKET hSocket;
+	HWND hWnd;
+	CWinThread* pThread;
 } PassData_t;
 
 class CSocketThread : public CWinThread
@@ -134,30 +137,30 @@ public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-    void SetWnd(HWND hWnd);
-    afx_msg void OnStartMessageExchange(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnStopMessageExchange(WPARAM wParam, LPARAM lParam);
-    static UINT Worker(LPVOID pData); //Thread 동작함수
+	void SetWnd(HWND hWnd);
+	afx_msg void OnStartMessageExchange(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnStopMessageExchange(WPARAM wParam, LPARAM lParam);
+	static UINT Worker(LPVOID pData); //Thread 동작함수
 
 public:
-    //CClientSocket m_ClientSocket;
-    SOCKET m_hSocket;
+	//CClientSocket m_ClientSocket;
+	SOCKET m_hSocket;
 
-    HWND m_hWnd;
+	HWND m_hWnd;
 
 private:
-    bool m_bLoop;
-    CWinThread* m_pThread;
+	bool m_bLoop;
+	CWinThread* m_pThread;
 
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-    virtual int Run();
+	virtual int Run();
 
 private:
-    int MergePacket(BYTE** ppTargetBinary, int& nTargetSize, BYTE* pSourceBinary, int nSourceSize);
-    int ParsePacket(BYTE* pData, int data_size, DtDataWrap_t** ppInfoWrap);
-    int MakeOnePacket(BYTE **pSendBuffer, int& send_size);
+	int MergePacket(BYTE** ppTargetBinary, int& nTargetSize, BYTE* pSourceBinary, int nSourceSize);
+	int ParsePacket(BYTE* pData, int data_size, DtDataWrap_t** ppInfoWrap);
+	int MakeOnePacket(BYTE** pSendBuffer, int& send_size);
 };
 
 
